@@ -13,13 +13,13 @@ public class Head : MonoBehaviour
     Vector3 rotation;
 
     protected Head target;
-    //protected Head head;
+    public Head head;
 
     void Start()
     {
         View = transform.Find("Camera");
         target = this;
-        //head = this;
+        head = this;
     }
 
     public virtual void move()
@@ -27,6 +27,22 @@ public class Head : MonoBehaviour
         transform.Rotate(rotation);
         transform.position += transform.forward;
         rotation = Vector3.zero;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.GetComponent<Tail>())
+        {
+            if (collision.gameObject.GetComponent<Tail>().head != this)
+            {
+                // do stuff
+                Debug.Log("Ran into enemy Tail");
+            }
+            else
+            {
+                Debug.Log("Ran into own Tail");
+            }
+        }
     }
 
     void Update()
