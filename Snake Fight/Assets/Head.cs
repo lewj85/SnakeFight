@@ -29,6 +29,17 @@ public class Head : MonoBehaviour
         rotation = Vector3.zero;
     }
 
+    public void extend()
+    {
+        Head tmp = target;
+        target = Instantiate(tail, target.transform).GetComponent<Tail>();
+        target.updateInterval = updateInterval;
+        target.transform.parent = null;
+        //target.head = this;
+        target.target = tmp;
+    }
+
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.GetComponent<Tail>())
@@ -61,12 +72,7 @@ public class Head : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Head tmp = target;
-            target = Instantiate(tail, target.transform).GetComponent<Tail>();
-            target.updateInterval = updateInterval;
-            target.transform.parent = null;
-            //target.head = this;
-            target.target = tmp;
+            extend();
         }
     }
 }
