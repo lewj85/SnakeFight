@@ -15,8 +15,9 @@ public class Food : MonoBehaviour {
     // of stuff anytime we try to set the new value of relocating. syntax for that is set { relocating = value; } 
     protected bool relocating
     {
+        // NOTE: currently the ": 2" isn't being used, but thinking ahead
+        set { cyclesSinceTrigger = (value ? 0 : 2); }  
         get { return cyclesSinceTrigger < 2; }
-        set;
     }
 
 
@@ -25,7 +26,7 @@ public class Food : MonoBehaviour {
         // reset the count
         relocating = true;
 
-        return new Vector3(Random.Range(0,mapSize.x), Random.Range(0,mapSize.y), Random.Range(0,mapSize.z));
+        return new Vector3(Random.Range(0,(int)mapSize.x), Random.Range(0,(int)mapSize.y), Random.Range(0,(int)mapSize.z));
     }
 
 
@@ -49,18 +50,6 @@ public class Food : MonoBehaviour {
     // OnTriggerStay and OnTriggerExit also exist
     void OnTriggerEnter(Collider other)
     {
-        OnTriggerStay(other);
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        // first check if we're relocating, if so then we need to find a new empty location
-        if (relocating)
-        {
-            findLocation();
-            return;
-        }
-
         Head head = other.GetComponent<Head>();  // head will be null if other isn't a Head object
         // if a head is what hit us
         if (head)
@@ -71,6 +60,19 @@ public class Food : MonoBehaviour {
             // move food
             // "transform" is a built-in component that contains position, scale, and rotation. we want to update the position
             transform.position = findLocation();
+        }
+        // any time an object is colliding with any objects for more than 1 frame 
+        // (even if it moves and collides with a 3rd object)
+        OnTriggerStay(other);
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        // first check if we're relocating, if so then we need to find a new empty location
+        if (relocating)
+        {
+            transform.position = findLocation();
+            return;
         }
     }
 }
