@@ -25,8 +25,8 @@ public class Food : MonoBehaviour {
     {
         // reset the count
         relocating = true;
-
-        return new Vector3(Random.Range(0,(int)mapSize.x), Random.Range(0,(int)mapSize.y), Random.Range(0,(int)mapSize.z));
+        // note: y is set to 0 to keep on the same plane
+        return new Vector3(Random.Range(0,(int)mapSize.x), 0, Random.Range(0,(int)mapSize.z));
     }
 
 
@@ -37,25 +37,30 @@ public class Food : MonoBehaviour {
         transform.position = findLocation();
     }
 	
-	// Update is called once per frame
-	void Update ()
+    // Update is called once per frame
+    void Update ()
     {
         // increment
         cyclesSinceTrigger++;
         if (!relocating) GetComponent<MeshRenderer>().enabled = true;
-	}
+    }
 
     // when clicking "Is Trigger" we change Sphere Collider to become a trigger 
     // so we can use OnTriggerEnter instead of OnCollisionEnter
     // OnTriggerStay and OnTriggerExit also exist
     void OnTriggerEnter(Collider other)
     {
-        Head head = other.GetComponent<Head>();  // head will be null if other isn't a Head object
+        Head head = other.GetComponent<Head>();  // head will be null if other isn't a Head OR Tail object
+        Tail tail = other.GetComponent<Tail>();  // tail will be null if other isn't a Tail
         // if a head is what hit us
         if (head)
         {
-            // add a tail piece to Head
-            head.extend();
+            // if you're a head but not a tail
+            if (! tail)
+            {
+                // add a tail piece to Head
+                head.extend();
+            }
 
             // move food
             // "transform" is a built-in component that contains position, scale, and rotation. we want to update the position

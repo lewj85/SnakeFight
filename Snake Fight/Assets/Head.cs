@@ -5,12 +5,14 @@ public class Head : MonoBehaviour
     [SerializeField]
     private float updateInterval;
     private float elapsed;
-
+    [SerializeField]
+    private bool isPlayer;
     [SerializeField]
     private GameObject tail;
 
     Transform View;
     Vector3 rotation;
+    Vector3 newXYZ;
 
     protected Head target;
     public Head head;
@@ -26,7 +28,7 @@ public class Head : MonoBehaviour
     {
         transform.Rotate(rotation);
         transform.position += transform.forward;
-        rotation = Vector3.zero;
+        rotation = Vector3.zero;  // reset immediately after moving
     }
 
     public void extend()
@@ -59,20 +61,25 @@ public class Head : MonoBehaviour
     void Update()
     {
         elapsed += Time.deltaTime;
-        if(elapsed >= updateInterval)
-        {
-            target.move();
-            elapsed = 0;
-        }
 
-        if (Input.GetButtonDown("Right")) rotation = new Vector3(0, 90, 0);
-        else if (Input.GetButtonDown("Left")) rotation = new Vector3(0, -90, 0);
-        else if (Input.GetButtonDown("Up")) rotation = new Vector3(-90, 0, 0);
-        else if (Input.GetButtonDown("Down")) rotation = new Vector3(90, 0, 0);
-
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (isPlayer)
         {
-            extend();
+            if (elapsed >= updateInterval)
+            {
+                target.move();
+                elapsed = 0;
+            }
+        
+            if (Input.GetButtonDown("Right")) rotation = new Vector3(0, 90, 0);
+            else if (Input.GetButtonDown("Left")) rotation = new Vector3(0, -90, 0);
+            // else if (Input.GetButtonDown("Up")) rotation = new Vector3(-90, 0, 0);
+            // else if (Input.GetButtonDown("Down")) rotation = new Vector3(90, 0, 0);
+
+            // TODO: remove, this is for testing only
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                extend();
+            }
         }
     }
 }
