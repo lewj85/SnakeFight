@@ -74,7 +74,7 @@ Transform:
   m_GameObject: {fileID: 1969603199894456}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.9, y: 0.9, z: 0.9}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4466241517494836}
   m_RootOrder: 1
@@ -199,7 +199,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.2, y: 1.2, z: 1.2}
+  m_Size: {x: 0.8, y: 0.8, z: 0.8}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!81 &81391707408691538
 AudioListener:
@@ -238,7 +238,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   updateInterval: 0.5
+  isPlayer: 0
   tail: {fileID: 1555889163918868, guid: a9e9511150b67d244b02c910a63eba01, type: 2}
+  head: {fileID: 0}
 --- !u!124 &124195360706698540
 Behaviour:
   m_ObjectHideFlags: 1
