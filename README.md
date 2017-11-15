@@ -6,7 +6,7 @@ Features:
 
 -Fight for food to make your snake longer
 
--Modes: can/can't go through your own walls, multiple lives/1 life only, free for all/team match
+-Modes: can/can't go through your own walls, multiple lives/1 life only, free for all/team match, domination/capture the flag(food)
 
 -Random items pop up on map like speed boosts, shields, etc
 

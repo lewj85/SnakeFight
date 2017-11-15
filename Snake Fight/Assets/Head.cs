@@ -62,6 +62,7 @@ public class Head : MonoBehaviour
     {
         elapsed += Time.deltaTime;
 
+        // player controls go here
         if (isPlayer)
         {
             if (elapsed >= updateInterval)
@@ -80,6 +81,16 @@ public class Head : MonoBehaviour
             {
                 extend();
             }
+        }
+        // AI pathing goes here
+        else
+        {
+            // compare food locations to head location - order them by distance
+            // loop
+                // pop next closest food
+                // create path array (adjust X first, then Z)
+                // check for obstruction along the way
+            // adjust position based on shortest path
         }
     }
 }
