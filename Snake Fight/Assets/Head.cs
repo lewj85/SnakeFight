@@ -2,7 +2,7 @@
 
 public class Head : MonoBehaviour
 {
-    [SerializeField]
+    [SerializeField]  // puts the variable below in the Inspector
     private float updateInterval;
     private float elapsed;
     [SerializeField]
@@ -19,7 +19,10 @@ public class Head : MonoBehaviour
 
     void Start()
     {
-        View = transform.Find("Camera");
+        if (isPlayer)
+        {
+            View = transform.Find("Camera");
+        }
         target = this;
         head = this;
     }
@@ -46,11 +49,13 @@ public class Head : MonoBehaviour
     {
         if (collision.gameObject.GetComponent<Tail>())
         {
+            // if you ran into an enemy tail
             if (collision.gameObject.GetComponent<Tail>().head != this)
             {
                 // do stuff
                 Debug.Log("Ran into enemy Tail");
             }
+            // if you ran into your own tail
             else
             {
                 Debug.Log("Ran into own Tail");
@@ -60,6 +65,7 @@ public class Head : MonoBehaviour
 
     void Update()
     {
+        // update time
         elapsed += Time.deltaTime;
 
         // player controls go here
@@ -85,7 +91,16 @@ public class Head : MonoBehaviour
         // AI pathing goes here
         else
         {
+            if (elapsed >= updateInterval)
+            {
+                target.move();
+                elapsed = 0;
+            }
+
             // compare food locations to head location - order them by distance
+            Vector3 foodLoc = GameObject.FindGameObjectWithTag("Food").transform.position;
+            Debug.Log(foodLoc);
+
             // loop
                 // pop next closest food
                 // create path array (adjust X first, then Z)
