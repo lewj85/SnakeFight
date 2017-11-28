@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 
 public class Head : MonoBehaviour
 {
@@ -30,7 +31,10 @@ public class Head : MonoBehaviour
     public virtual void move()
     {
         transform.Rotate(rotation);
-        transform.position += transform.forward;
+        // round values
+        Vector3 tmp = transform.forward;
+        transform.position += new Vector3(Mathf.Round(tmp.x), Mathf.Round(tmp.y), Mathf.Round(tmp.z));
+        //transform.position += transform.forward;
         rotation = Vector3.zero;  // reset immediately after moving
     }
 
@@ -40,13 +44,15 @@ public class Head : MonoBehaviour
         target = Instantiate(tail, target.transform).GetComponent<Tail>();
         target.updateInterval = updateInterval;
         target.transform.parent = null;
-        //target.head = this;
+        target.head = this;
         target.target = tmp;
     }
 
 
-    private void OnCollisionEnter(Collision collision)
+    // OnCollisionEnter wasn't working so I went with OnTriggerEnter and used RigidBody
+    void OnTriggerEnter(Collider collision)
     {
+        Debug.Log("Player Head TriggerEnter");
         if (collision.gameObject.GetComponent<Tail>())
         {
             // if you ran into an enemy tail
@@ -98,8 +104,8 @@ public class Head : MonoBehaviour
             }
 
             // compare food locations to head location - order them by distance
-            Vector3 foodLoc = GameObject.FindGameObjectWithTag("Food").transform.position;
-            Debug.Log(foodLoc);
+            Vector3 foodLoc = GameObject.FindObjectOfType<Food>().transform.position;
+            // Debug.Log(foodLoc);
 
             // loop
                 // pop next closest food

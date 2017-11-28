@@ -34,7 +34,7 @@ public class Food : MonoBehaviour {
     void Start ()
     {
         // find a location when we start
-        transform.position = findLocation();
+        // transform.position = findLocation();
     }
 	
     // Update is called once per frame
