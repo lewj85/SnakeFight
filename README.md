@@ -1,13 +1,10 @@
 # Snake Fight
 
-## The classic Snake game but player-versus-player and 3D
+## The classic Snake game but player-versus-player
+
+Fight for food to make your snake longer. Pick up items to aid you.
 
 Features:
-
--Fight for food to make your snake longer
-
--Modes: can/can't go through your own walls, multiple lives/1 life only, free for all/team match, domination/capture the flag(food)
-
--Random items pop up on map like speed boosts, shields, etc
-
--Different maps: empty cube, walls, edges
+-Modes: Free For All, Team Deathmatch, Capture The Flag
+-Items: Speed Boosts, Shields, Camouflage
+-Maps: No Walls, Outer Walls, Inner Walls
