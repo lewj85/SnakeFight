@@ -1,13 +1,11 @@
 ﻿using UnityEngine;
 
 public class Tail : Head
-{
-    // copy material from head
-    //private Material mt = head.GetComponentInChildren<Material>();
-    
+{   
     void Start()
     {
-        GetComponentInChildren<Renderer>().material = head.m;
+        // copy material from head
+        GetComponent<Renderer>().material = head.m;
     }
     void Update()
     {

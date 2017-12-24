@@ -24,7 +24,7 @@ public class Head : MonoBehaviour
         if (isPlayer)
         {
             //m = Materials.Load("Player", typeof(Material)) as Material;
-            //GetComponent<Renderer>().material = m;
+            GetComponent<Renderer>().material = m;
             //View = transform.Find("Camera");
         }
         target = this;
@@ -106,10 +106,15 @@ public class Head : MonoBehaviour
                 target.move();
                 elapsed = 0;
             }
+            // TODO: remove, this is for testing only
+            if (Input.GetKeyDown(KeyCode.B))
+            {
+                extend();
+            }
 
             // compare food locations to head location - order them by distance
-            Vector3 foodLoc = GameObject.FindObjectOfType<Food>().transform.position;
-            // Debug.Log(foodLoc);
+            Vector3 foodLoc = FindObjectOfType<Food>().transform.position;
+            Debug.Log(foodLoc);
 
             // loop
                 // pop next closest food
