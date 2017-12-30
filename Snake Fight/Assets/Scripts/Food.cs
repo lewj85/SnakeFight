@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class Food : MonoBehaviour {
 
+    public Vector3 mapSize1;
+
     private int cyclesSinceTrigger
     {
         get;
         set; // TODO: disable rendering if < 2 and enable if > 1
     }
-    public Vector3 mapSize;  // move this out of food
+    
     // the reason we don't just set relocating = cyclesSinceTrigger < 2 is because we want to update it
     // every time that it is checked. the syntax to do that is below. can also use 'set' to do a whole bunch
     // of stuff anytime we try to set the new value of relocating. syntax for that is set { relocating = value; } 
@@ -27,10 +29,12 @@ public class Food : MonoBehaviour {
 
     protected Vector3 findLocation()
     {
+        //mapSize1 = GetComponent<GameController>().mapSize;
+        mapSize1.Set(15, 0, 15);
         // reset the count
         relocating = true;
         // note: y is set to 0 to keep on the same plane
-        return new Vector3(Random.Range(0,(int)mapSize.x), 0.0f, Random.Range(0,(int)mapSize.z));
+        return new Vector3(Random.Range(0,(int)mapSize1.x), 0.0f, Random.Range(0,(int)mapSize1.z));
     }
 
 
@@ -40,7 +44,7 @@ public class Food : MonoBehaviour {
         // find a location when we start
         //transform.position = findLocation();
     }
-	
+
     // Update is called once per frame
     void Update ()
     {

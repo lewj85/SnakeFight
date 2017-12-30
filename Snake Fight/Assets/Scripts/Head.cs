@@ -11,6 +11,7 @@ public class Head : MonoBehaviour
     [SerializeField]
     private GameObject tail;
     public Material m;
+    private int numberOfTails;
 
     //Transform View;
     Vector3 rotation;
@@ -21,6 +22,8 @@ public class Head : MonoBehaviour
 
     void Start()
     {
+        numberOfTails = 0;
+
         if (isPlayer)
         {
             //m = Materials.Load("Player", typeof(Material)) as Material;
@@ -50,6 +53,7 @@ public class Head : MonoBehaviour
         target.transform.parent = null;
         target.head = this;
         target.target = tmp;
+        numberOfTails += 1;
     }
 
 
@@ -68,7 +72,11 @@ public class Head : MonoBehaviour
             // if you ran into your own tail
             else
             {
-                Debug.Log("Ran into own Tail");
+                // the first time you create a tail, it places it where the head is, so there's a collision. ignore the first time!
+                if (numberOfTails > 1)
+                {
+                    Debug.Log("Ran into own Tail");
+                }
             }
         }
     }
