@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 public class Tail : Head
-{   
+{
     void Start()
     {
         // copy material from head
@@ -18,5 +18,9 @@ public class Tail : Head
             transform.position = target.transform.position;
             target.move();
         }
+    }
+    public override void OnTriggerEnter(Collider collision)
+    {
+        // need to override because Tails will inherit and run Head's OnTriggerEnter()
     }
 }

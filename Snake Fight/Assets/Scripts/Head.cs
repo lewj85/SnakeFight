@@ -11,7 +11,8 @@ public class Head : MonoBehaviour
     [SerializeField]
     private GameObject tail;
     public Material m;
-    private int numberOfTails;
+    [SerializeField]
+    public int numberOfTails;
 
     //Transform View;
     Vector3 rotation;
@@ -58,24 +59,49 @@ public class Head : MonoBehaviour
 
 
     // OnCollisionEnter wasn't working so I went with OnTriggerEnter and used RigidBody
-    void OnTriggerEnter(Collider collision)
+    public virtual void OnTriggerEnter(Collider collision)
     {
-        Debug.Log("Player Head TriggerEnter");
-        if (collision.gameObject.GetComponent<Tail>())
+        if (isPlayer)
         {
-            // if you ran into an enemy tail
-            if (collision.gameObject.GetComponent<Tail>().head != this)
+            //Debug.Log("Player Head TriggerEnter");
+            if (collision.gameObject.GetComponent<Tail>())
             {
-                // do stuff
-                Debug.Log("Ran into enemy Tail");
-            }
-            // if you ran into your own tail
-            else
-            {
-                // the first time you create a tail, it places it where the head is, so there's a collision. ignore the first time!
-                if (numberOfTails > 1)
+                // if you ran into an enemy tail
+                if (collision.gameObject.GetComponent<Tail>().head != this)
                 {
-                    Debug.Log("Ran into own Tail");
+                    // do stuff
+                    Debug.Log("Player Head ran into enemy Tail");
+                }
+                // if you ran into your own tail
+                else
+                {
+                    // the first time you create a tail, it places it where the head is, so there's a collision. ignore the first time!
+                    if (numberOfTails > 1)
+                    {
+                        Debug.Log("Player head ran into own Tail");
+                    }
+                }
+            }
+        }
+        else
+        {
+            //Debug.Log("AI Head TriggerEnter");
+            if (collision.gameObject.GetComponent<Tail>())
+            {
+                // if AI ran into an enemy tail
+                if (collision.gameObject.GetComponent<Tail>().head != this)
+                {
+                    // do stuff
+                    Debug.Log("AI Head ran into enemy Tail");
+                }
+                // if AI ran into its own tail
+                else
+                {
+                    // the first time AI creates a tail, it places it where the head is, so there's a collision. ignore the first time!
+                    if (numberOfTails > 1)
+                    {
+                        Debug.Log("AI head ran into own Tail");
+                    }
                 }
             }
         }
@@ -114,7 +140,7 @@ public class Head : MonoBehaviour
                 target.move();
                 elapsed = 0;
             }
-            // TODO: remove, this is for testing only
+            // TODO: remove, this is for testing only - press B to extend
             if (Input.GetKeyDown(KeyCode.B))
             {
                 extend();
@@ -122,7 +148,7 @@ public class Head : MonoBehaviour
 
             // compare food locations to head location - order them by distance
             Vector3 foodLoc = FindObjectOfType<Food>().transform.position;
-            Debug.Log(foodLoc);
+            //Debug.Log(foodLoc);
 
             // loop
                 // pop next closest food
