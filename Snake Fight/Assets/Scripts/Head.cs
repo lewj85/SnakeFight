@@ -23,6 +23,7 @@ public class Head : MonoBehaviour
 
     void Start()
     {
+        updateInterval = GameObject.Find("GameController1").GetComponent<GameController>().updateInterval;
         numberOfTails = 0;
 
         if (isPlayer)

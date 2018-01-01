@@ -2,51 +2,49 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Food : MonoBehaviour {
+public class Food : MonoBehaviour
+{
 
-    public Vector3 mapSize1;
+    private Vector3 mapSize;
 
-    private int cyclesSinceTrigger
-    {
-        get;
-        set; // TODO: disable rendering if < 2 and enable if > 1
-    }
-    
+    private int cyclesSinceTrigger;
+
     // the reason we don't just set relocating = cyclesSinceTrigger < 2 is because we want to update it
     // every time that it is checked. the syntax to do that is below. can also use 'set' to do a whole bunch
     // of stuff anytime we try to set the new value of relocating. syntax for that is set { relocating = value; } 
     protected bool relocating
     {
-        // NOTE: currently the ": 2" isn't being used, but thinking ahead
         set
         {
-            cyclesSinceTrigger = (value ? 0 : 2);
-            //GetComponent<MeshRenderer>().enabled = false;
-        }  
+            cyclesSinceTrigger = (value ? 0 : 1);
+            // enable/disable rendering
+            GetComponent<MeshRenderer>().enabled = (cyclesSinceTrigger > 0);
+        }
         get { return cyclesSinceTrigger < 2; }
     }
 
 
     protected Vector3 findLocation()
     {
-        //mapSize1 = GetComponent<GameController>().mapSize;
-        mapSize1.Set(15, 0, 15);
+        // get variable from script of another object
+        mapSize = GameObject.Find("GameController1").GetComponent<GameController>().mapSize;
         // reset the count
         relocating = true;
         // note: y is set to 0 to keep on the same plane
-        return new Vector3(Random.Range(0,(int)mapSize1.x), 0.0f, Random.Range(0,(int)mapSize1.z));
+        return new Vector3(Random.Range(-(int)mapSize.x, (int)mapSize.x), 0.0f, Random.Range(-(int)mapSize.z, (int)mapSize.z));
     }
 
 
     // Use this for initialization
-    void Start ()
+    void Start()
     {
         // find a location when we start
         //transform.position = findLocation();
+        cyclesSinceTrigger = 0;
     }
 
     // Update is called once per frame
-    void Update ()
+    void Update()
     {
         // increment
         cyclesSinceTrigger++;
@@ -55,7 +53,6 @@ public class Food : MonoBehaviour {
 
     // when clicking "Is Trigger" we change Sphere Collider to become a trigger 
     // so we can use OnTriggerEnter instead of OnCollisionEnter
-    // OnTriggerStay and OnTriggerExit also exist
     void OnTriggerEnter(Collider other)
     {
         Head head = other.GetComponent<Head>();  // head will be null if other isn't a Head OR Tail object
@@ -64,7 +61,7 @@ public class Food : MonoBehaviour {
         if (head)
         {
             // if it's a head but not a tail
-            if (! tail)
+            if (!tail)
             {
                 // add a tail piece to that head
                 head.extend();
@@ -85,7 +82,12 @@ public class Food : MonoBehaviour {
         if (relocating)
         {
             transform.position = findLocation();
-            return;
         }
+    }
+
+    // make sure to reset relocating to false after done colliding
+    void OnTriggerExit(Collider other)
+    {
+        relocating = false;
     }
 }

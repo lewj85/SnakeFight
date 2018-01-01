@@ -4,9 +4,11 @@ using System.Collections.Generic;
 
 public class GameController : MonoBehaviour
 {
-
     [SerializeField]
     public Vector3 mapSize;
+
+    [SerializeField]
+    public float updateInterval;
 
     [SerializeField]
     public int livesForPlayer1;
@@ -34,6 +36,7 @@ public class GameController : MonoBehaviour
     void Start()
     {
         mapSize.Set(15, 0, 15);
+        updateInterval = 0.25f;
         livesForPlayer1 = 3;
         livesForPlayer2 = 3;
         livesForPlayer3 = 3;
