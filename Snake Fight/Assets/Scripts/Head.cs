@@ -14,15 +14,22 @@ public class Head : MonoBehaviour
     [SerializeField]
     public int numberOfTails;
 
+    // Save the start location for respawning
+    public Transform startingTransform;
+
     //Transform View;
     Vector3 rotation;
     Vector3 newXYZ;
 
-    protected Head target;
+    [SerializeField]
+    protected Head target;  // the head's target will always be the last tail, but each tail's target will be the tail in FRONT of it
+                            // so the target of the tail immediately behind the head will be the head!
+    [SerializeField]
     public Head head;
 
     void Start()
     {
+        startingTransform = transform;
         updateInterval = GameObject.Find("GameController1").GetComponent<GameController>().updateInterval;
         numberOfTails = 0;
 
@@ -34,7 +41,6 @@ public class Head : MonoBehaviour
         }
         target = this;
         head = this;
-        
     }
 
     public virtual void move()
@@ -49,15 +55,28 @@ public class Head : MonoBehaviour
 
     public void extend()
     {
-        Head tmp = target;
-        target = Instantiate(tail, target.transform).GetComponent<Tail>();
+        Head tmp = target;  // save current target (last tail) temporarily to set as new tail's target
+        target = Instantiate(tail, target.transform).GetComponent<Tail>();  // make a new tail at current target's location (transform)
         target.updateInterval = updateInterval;
-        target.transform.parent = null;
-        target.head = this;
-        target.target = tmp;
+        target.transform.parent = null;  // necessary in case parent head is moving in a different direction?
+        target.head = this;  // set this as head
+        target.target = tmp;  // set target to temporary last tail we saved before
         numberOfTails += 1;
     }
 
+    public void respawn()
+    {
+        Debug.Log("Respawning");
+    }
+
+    public virtual void destroyTails(Head whereToStop)
+    {
+        if (numberOfTails == 0) { return; }
+        else
+        {
+            target.destroyTails(whereToStop);
+        }
+    }
 
     // OnCollisionEnter wasn't working so I went with OnTriggerEnter and used RigidBody
     public virtual void OnTriggerEnter(Collider collision)
@@ -72,6 +91,8 @@ public class Head : MonoBehaviour
                 {
                     // do stuff
                     Debug.Log("Player Head ran into enemy Tail");
+                    GameObject.Find("GameController1").GetComponent<GameController>().livesForPlayer1 -= 1;
+                    if (GameObject.Find("GameController1").GetComponent<GameController>().livesForPlayer1 != 0) { respawn(); }
                 }
                 // if you ran into your own tail
                 else
@@ -80,6 +101,8 @@ public class Head : MonoBehaviour
                     if (numberOfTails > 1)
                     {
                         Debug.Log("Player head ran into own Tail");
+                        GameObject.Find("GameController1").GetComponent<GameController>().livesForPlayer1 -= 1;
+                        if (GameObject.Find("GameController1").GetComponent<GameController>().livesForPlayer1 != 0) { respawn(); }
                     }
                 }
             }
@@ -94,6 +117,8 @@ public class Head : MonoBehaviour
                 {
                     // do stuff
                     Debug.Log("AI Head ran into enemy Tail");
+                    GameObject.Find("GameController1").GetComponent<GameController>().livesForAI1 -= 1;
+                    if (GameObject.Find("GameController1").GetComponent<GameController>().livesForAI1 != 0) { respawn(); }
                 }
                 // if AI ran into its own tail
                 else
@@ -102,6 +127,8 @@ public class Head : MonoBehaviour
                     if (numberOfTails > 1)
                     {
                         Debug.Log("AI head ran into own Tail");
+                        GameObject.Find("GameController1").GetComponent<GameController>().livesForAI1 -= 1;
+                        if (GameObject.Find("GameController1").GetComponent<GameController>().livesForAI1 != 0) { respawn(); }
                     }
                 }
             }

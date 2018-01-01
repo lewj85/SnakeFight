@@ -210,7 +210,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1353166985672358, guid: 7523b98381f43434ab9ae0c23eaa2c94, type: 2}
       propertyPath: m_Name
-      value: AI
+      value: AI1
       objectReference: {fileID: 0}
     - target: {fileID: 4520217528893226, guid: 7523b98381f43434ab9ae0c23eaa2c94, type: 2}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -294,7 +294,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1353166985672358, guid: 7523b98381f43434ab9ae0c23eaa2c94, type: 2}
       propertyPath: m_Name
-      value: Player
+      value: Player1
       objectReference: {fileID: 0}
     - target: {fileID: 114519697551375274, guid: 7523b98381f43434ab9ae0c23eaa2c94,
         type: 2}
@@ -888,11 +888,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4465164774341564, guid: 6dd7d3730ee4ac14ca5726bb99376b7a, type: 2}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4465164774341564, guid: 6dd7d3730ee4ac14ca5726bb99376b7a, type: 2}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4465164774341564, guid: 6dd7d3730ee4ac14ca5726bb99376b7a, type: 2}
       propertyPath: m_LocalRotation.w
