@@ -30,6 +30,16 @@ public class Head : MonoBehaviour
     void Start()
     {
         startingTransform = transform;
+        if (isPlayer)
+        {
+            //Debug.Log("Player: startingTransform.position" + startingTransform.position);
+            //Debug.Log("Player: startingTransform.rotation" + startingTransform.rotation);
+        }
+        else
+        {
+            //Debug.Log("AI: startingTransform.position" + startingTransform.position);
+            //Debug.Log("AI: startingTransform.rotation" + startingTransform.rotation);
+        }
         updateInterval = GameObject.Find("GameController1").GetComponent<GameController>().updateInterval;
         numberOfTails = 0;
 
@@ -103,6 +113,13 @@ public class Head : MonoBehaviour
                         Debug.Log("Player head ran into own Tail");
                         GameObject.Find("GameController1").GetComponent<GameController>().livesForPlayer1 -= 1;
                         if (GameObject.Find("GameController1").GetComponent<GameController>().livesForPlayer1 != 0) { respawn(); }
+                        Debug.Log("Teleporting to: " + startingTransform.position);
+                        // pick a random respawn point and teleport there
+                        System.Random ran = new System.Random();
+                        Transform[] options = GameObject.Find("GameController1").GetComponent<GameController>().spawnPointList;
+                        Transform respawnTransform = options[ran.Next(0, options.Length)];
+                        transform.position = respawnTransform.position;
+                        transform.rotation = respawnTransform.rotation;
                     }
                 }
             }
