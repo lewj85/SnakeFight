@@ -72,7 +72,14 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            updateInterval = 0;
+            LoadingScreenManager.LoadScene(0);
+        }
+
         food1Location = GameObject.Find("Food1").transform.position;
+        food2Location = GameObject.Find("Food2").transform.position;
 
         if (livesForPlayer1 == 0)
         {

@@ -88,7 +88,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 539e459d441832a4c8afe4d06d172fa0, type: 2}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -195,4 +195,7 @@ MonoBehaviour:
   isPlayer: 0
   tail: {fileID: 1555889163918868, guid: a9e9511150b67d244b02c910a63eba01, type: 2}
   m: {fileID: 0}
+  numberOfTails: 0
+  startingTransform: {fileID: 0}
+  target: {fileID: 0}
   head: {fileID: 0}
