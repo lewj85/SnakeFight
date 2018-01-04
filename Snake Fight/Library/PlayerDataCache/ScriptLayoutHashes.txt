@@ -13,6 +13,7 @@ ff05dcdf90651c3d98a9cad3df5e471e UnityEngine.Timeline.dll:UnityEngine.Timeline.C
 7b848b7feaa524953d09fc1851efa6da UnityEngine.Timeline.dll:UnityEngine.Timeline.PlayableTrack
 c24a21b131bfa67be1162db2cba4b52b UnityEngine.Timeline.dll:UnityEngine.Timeline.TimelineAsset
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.Camera
+193aae9c226fe30a4107d22e35a67995 Assembly-CSharp.dll:.LoadingScreenManager
 1c622b6d9fcff4728fa0e9287678e06f Assembly-CSharp.dll:.Head
 a35dc9cca2faebc5f5f1aeb9e8e47bbe UnityEngine.UI.dll:UnityEngine.UI.AspectRatioFitter
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.UI.dll:UnityEngine.EventSystems.BaseInput
@@ -136,5 +137,4 @@ c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.VR.WSA.Spa
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.Ground
 1c622b6d9fcff4728fa0e9287678e06f Assembly-CSharp.dll:.Tail
 c83cf80138d6d27e0d5c817d9b573993 Assembly-CSharp.dll:.GameController
-193aae9c226fe30a4107d22e35a67995 Assembly-CSharp.dll:.LoadingScreenManager
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.LoadTargetSceneButton
