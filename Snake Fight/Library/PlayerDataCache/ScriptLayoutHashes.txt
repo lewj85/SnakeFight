@@ -137,4 +137,4 @@ c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.VR.WSA.Spa
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.Ground
 1c622b6d9fcff4728fa0e9287678e06f Assembly-CSharp.dll:.Tail
 c83cf80138d6d27e0d5c817d9b573993 Assembly-CSharp.dll:.GameController
-05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.LoadTargetSceneButton
+05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.MenuButtons

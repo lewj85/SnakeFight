@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LoadTargetSceneButton : MonoBehaviour {
+public class MenuButtons : MonoBehaviour {
 
     public void LoadSceneNum(int num)
     {
@@ -13,5 +13,10 @@ public class LoadTargetSceneButton : MonoBehaviour {
         }
 
         LoadingScreenManager.LoadScene(num);
+    }
+
+    public void Quit()
+    {
+        Application.Quit();
     }
 }

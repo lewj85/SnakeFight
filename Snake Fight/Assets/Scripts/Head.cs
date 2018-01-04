@@ -77,6 +77,12 @@ public class Head : MonoBehaviour
     public void respawn()
     {
         Debug.Log("Respawning");
+        // pick a random respawn point and teleport there
+        System.Random ran = new System.Random();
+        Transform[] options = GameObject.Find("GameController1").GetComponent<GameController>().spawnPointList;
+        Transform respawnTransform = options[ran.Next(0, options.Length)];
+        transform.position = respawnTransform.position;
+        transform.rotation = respawnTransform.rotation;
     }
 
     public virtual void destroyTails(Head whereToStop)
@@ -110,16 +116,9 @@ public class Head : MonoBehaviour
                     // the first time you create a tail, it places it where the head is, so there's a collision. ignore the first time!
                     if (numberOfTails > 1)
                     {
-                        Debug.Log("Player head ran into own Tail");
+                        Debug.Log("Player Head ran into own Tail");
                         GameObject.Find("GameController1").GetComponent<GameController>().livesForPlayer1 -= 1;
                         if (GameObject.Find("GameController1").GetComponent<GameController>().livesForPlayer1 != 0) { respawn(); }
-                        Debug.Log("Teleporting to: " + startingTransform.position);
-                        // pick a random respawn point and teleport there
-                        System.Random ran = new System.Random();
-                        Transform[] options = GameObject.Find("GameController1").GetComponent<GameController>().spawnPointList;
-                        Transform respawnTransform = options[ran.Next(0, options.Length)];
-                        transform.position = respawnTransform.position;
-                        transform.rotation = respawnTransform.rotation;
                     }
                 }
             }
