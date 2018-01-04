@@ -3,9 +3,10 @@ using System;
 
 public class Head : MonoBehaviour
 {
-    [SerializeField]  // puts the variable below in the Inspector
+    public int livesRemaining;
     private float updateInterval;
     private float elapsed;
+
     [SerializeField]
     private bool isPlayer;
     [SerializeField]
@@ -29,17 +30,13 @@ public class Head : MonoBehaviour
 
     void Start()
     {
+        // TODO: add this after you make the GameController create the Player Head
+        //livesRemaining = GameObject.Find("GameController1").GetComponent<GameController>().numberOfLives;
+        livesRemaining = 3;
         startingTransform = transform;
-        if (isPlayer)
-        {
-            //Debug.Log("Player: startingTransform.position" + startingTransform.position);
-            //Debug.Log("Player: startingTransform.rotation" + startingTransform.rotation);
-        }
-        else
-        {
-            //Debug.Log("AI: startingTransform.position" + startingTransform.position);
-            //Debug.Log("AI: startingTransform.rotation" + startingTransform.rotation);
-        }
+        target = this;
+        head = this;
+
         updateInterval = GameObject.Find("GameController1").GetComponent<GameController>().updateInterval;
         numberOfTails = 0;
 
@@ -49,8 +46,6 @@ public class Head : MonoBehaviour
             GetComponent<Renderer>().material = m;
             //View = transform.Find("Camera");
         }
-        target = this;
-        head = this;
     }
 
     public virtual void move()
@@ -100,52 +95,141 @@ public class Head : MonoBehaviour
         if (isPlayer)
         {
             //Debug.Log("Player Head TriggerEnter");
-            if (collision.gameObject.GetComponent<Tail>())
+
+            // if Player runs into a Wall
+            if (collision.gameObject.GetComponent<Wall>())
             {
-                // if you ran into an enemy tail
+                Debug.Log("Player Head ran into Wall");
+                GameObject.Find("Player1").GetComponent<Head>().livesRemaining -= 1;
+                if (GameObject.Find("Player1").GetComponent<Head>().livesRemaining != 0)
+                {
+                    respawn();
+                }
+                else
+                {
+                    LoadingScreenManager.LoadScene(0);
+                }
+            }
+            // if Player runs into a Tail
+            else if (collision.gameObject.GetComponent<Tail>())
+            {
+                // if Player runs into an enemy tail
                 if (collision.gameObject.GetComponent<Tail>().head != this)
                 {
-                    // do stuff
                     Debug.Log("Player Head ran into enemy Tail");
-                    GameObject.Find("GameController1").GetComponent<GameController>().livesForPlayer1 -= 1;
-                    if (GameObject.Find("GameController1").GetComponent<GameController>().livesForPlayer1 != 0) { respawn(); }
+                    GameObject.Find("Player1").GetComponent<Head>().livesRemaining -= 1;
+                    if (GameObject.Find("Player1").GetComponent<Head>().livesRemaining != 0)
+                    {
+                        respawn();
+                    }
+                    else
+                    {
+                        LoadingScreenManager.LoadScene(0);
+                    }
                 }
-                // if you ran into your own tail
+                // if Player runs into your own tail
                 else
                 {
                     // the first time you create a tail, it places it where the head is, so there's a collision. ignore the first time!
                     if (numberOfTails > 1)
                     {
                         Debug.Log("Player Head ran into own Tail");
-                        GameObject.Find("GameController1").GetComponent<GameController>().livesForPlayer1 -= 1;
-                        if (GameObject.Find("GameController1").GetComponent<GameController>().livesForPlayer1 != 0) { respawn(); }
+                        GameObject.Find("Player1").GetComponent<Head>().livesRemaining -= 1;
+                        if (GameObject.Find("Player1").GetComponent<Head>().livesRemaining != 0)
+                        {
+                            respawn();
+                        }
+                        else
+                        {
+                            LoadingScreenManager.LoadScene(0);
+                        }
                     }
+                }
+            }
+            // if Player runs into a Head - NOTE: leave this as last else-if so it runs Tail code first (because Tails inherit from Head)
+            else if (collision.gameObject.GetComponent<Head>())
+            {
+                Debug.Log("Player Head ran into enemy Head");
+                GameObject.Find("Player1").GetComponent<Head>().livesRemaining -= 1;
+                if (GameObject.Find("Player1").GetComponent<Head>().livesRemaining != 0)
+                {
+                    respawn();
+                }
+                else
+                {
+                    LoadingScreenManager.LoadScene(0);
                 }
             }
         }
         else
         {
             //Debug.Log("AI Head TriggerEnter");
-            if (collision.gameObject.GetComponent<Tail>())
+
+            // if AI runs into a Wall
+            if (collision.gameObject.GetComponent<Wall>())
             {
-                // if AI ran into an enemy tail
+                Debug.Log("AI Head ran into Wall");
+                GameObject.Find("AI1").GetComponent<Head>().livesRemaining -= 1;
+                if (GameObject.Find("AI1").GetComponent<Head>().livesRemaining != 0)
+                {
+                    respawn();
+                }
+                else
+                {
+                    // leaving commented for testing
+                    //LoadingScreenManager.LoadScene(0);
+                }
+            }
+            else if (collision.gameObject.GetComponent<Tail>())
+            {
+                // if AI runs into an enemy tail
                 if (collision.gameObject.GetComponent<Tail>().head != this)
                 {
-                    // do stuff
                     Debug.Log("AI Head ran into enemy Tail");
-                    GameObject.Find("GameController1").GetComponent<GameController>().livesForAI1 -= 1;
-                    if (GameObject.Find("GameController1").GetComponent<GameController>().livesForAI1 != 0) { respawn(); }
+                    GameObject.Find("AI1").GetComponent<Head>().livesRemaining -= 1;
+                    if (GameObject.Find("AI1").GetComponent<Head>().livesRemaining != 0)
+                    {
+                        respawn();
+                    }
+                    else
+                    {
+                        // leaving commented for testing
+                        //LoadingScreenManager.LoadScene(0);
+                    }
                 }
-                // if AI ran into its own tail
+                // if AI runs into its own tail
                 else
                 {
                     // the first time AI creates a tail, it places it where the head is, so there's a collision. ignore the first time!
                     if (numberOfTails > 1)
                     {
                         Debug.Log("AI head ran into own Tail");
-                        GameObject.Find("GameController1").GetComponent<GameController>().livesForAI1 -= 1;
-                        if (GameObject.Find("GameController1").GetComponent<GameController>().livesForAI1 != 0) { respawn(); }
+                        GameObject.Find("AI1").GetComponent<Head>().livesRemaining -= 1;
+                        if (GameObject.Find("AI1").GetComponent<Head>().livesRemaining != 0)
+                        {
+                            respawn();
+                        }
+                        else
+                        {
+                            // leaving commented for testing
+                            //LoadingScreenManager.LoadScene(0);
+                        }
                     }
+                }
+            }
+            // if AI runs into a Head - NOTE: leave this as last else-if so it runs Tail code first (because Tails inherit from Head)
+            else if (collision.gameObject.GetComponent<Head>())
+            {
+                Debug.Log("AI Head ran into enemy Head");
+                GameObject.Find("AI1").GetComponent<Head>().livesRemaining -= 1;
+                if (GameObject.Find("AI1").GetComponent<Head>().livesRemaining != 0)
+                {
+                    respawn();
+                }
+                else
+                {
+                    // leaving commented for testing
+                    //LoadingScreenManager.LoadScene(0);
                 }
             }
         }
@@ -167,8 +251,9 @@ public class Head : MonoBehaviour
         
             if (Input.GetButtonDown("Right")) rotation = new Vector3(0, 90, 0);
             else if (Input.GetButtonDown("Left")) rotation = new Vector3(0, -90, 0);
-            // else if (Input.GetButtonDown("Up")) rotation = new Vector3(-90, 0, 0);
-            // else if (Input.GetButtonDown("Down")) rotation = new Vector3(90, 0, 0);
+            // 3D movement
+            //else if (Input.GetButtonDown("Up")) rotation = new Vector3(-90, 0, 0);
+            //else if (Input.GetButtonDown("Down")) rotation = new Vector3(90, 0, 0);
 
             // TODO: remove, this is for testing only
             if (Input.GetKeyDown(KeyCode.Space))

@@ -11,22 +11,7 @@ public class GameController : MonoBehaviour
     public float updateInterval;
 
     [SerializeField]
-    public int livesForPlayer1;
-    [SerializeField]
-    public int livesForPlayer2;
-    [SerializeField]
-    public int livesForPlayer3;
-    [SerializeField]
-    public int livesForPlayer4;
-
-    [SerializeField]
-    public int livesForAI1;
-    [SerializeField]
-    public int livesForAI2;
-    [SerializeField]
-    public int livesForAI3;
-    [SerializeField]
-    public int livesForAI4;
+    public int numberOfLives;
 
     public Vector3 food1Location;
     public Vector3 food2Location;
@@ -44,14 +29,7 @@ public class GameController : MonoBehaviour
         mapSize.Set(15, 0, 15);
         updateInterval = 0.25f;
 
-        livesForPlayer1 = 3;
-        livesForPlayer2 = 3;
-        livesForPlayer3 = 3;
-        livesForPlayer4 = 3;
-        livesForAI1 = 3;
-        livesForAI2 = 3;
-        livesForAI3 = 3;
-        livesForAI4 = 3;
+        numberOfLives = 3;
 
         spawnPoint1 = new GameObject().transform;
         spawnPoint1.position = new Vector3(-10, 0, -10);
@@ -81,37 +59,13 @@ public class GameController : MonoBehaviour
         food1Location = GameObject.Find("Food1").transform.position;
         food2Location = GameObject.Find("Food2").transform.position;
 
-        if (livesForPlayer1 == 0)
+        if (GameObject.Find("Player1"))
         {
-            Debug.Log("Player1 is dead");
+            if (GameObject.Find("Player1").GetComponent<Head>().livesRemaining == 0) { Debug.Log("Player1 is dead"); }
         }
-        if (livesForPlayer2 == 0)
+        if (GameObject.Find("AI1"))
         {
-            Debug.Log("Player2 is dead");
-        }
-        if (livesForPlayer3 == 0)
-        {
-            Debug.Log("Player3 is dead");
-        }
-        if (livesForPlayer4 == 0)
-        {
-            Debug.Log("Player4 is dead");
-        }
-        if (livesForAI1 == 0)
-        {
-            Debug.Log("AI1 is dead");
-        }
-        if (livesForAI2 == 0)
-        {
-            Debug.Log("AI2 is dead");
-        }
-        if (livesForAI3 == 0)
-        {
-            Debug.Log("AI3 is dead");
-        }
-        if (livesForAI4 == 0)
-        {
-            Debug.Log("AI4 is dead");
+            if (GameObject.Find("AI1").GetComponent<Head>().livesRemaining == 0) { Debug.Log("AI1 is dead"); }
         }
     }
 }
