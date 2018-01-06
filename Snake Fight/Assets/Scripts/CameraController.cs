@@ -3,10 +3,10 @@
 public class CameraController : MonoBehaviour {
 
 	public GameObject target;
-	Vector3 targetPositionOld, targetPositionNew, beginPosition;
-	Quaternion targetRotationOld, targetRotationNew, beginRotation;
+    Vector3 targetPositionOld, targetPositionNew, beginPosition;
+    Quaternion targetRotationOld, targetRotationNew, beginRotation;
 
-	//bool targetHasMoved { get { return targetPositionNew != targetPositionOld; } }
+	bool targetHasMoved { get { return targetPositionNew != targetPositionOld; } }
 	bool targetHasTurned { get { return targetRotationNew != targetRotationOld; } }
 
 	float positionElapsedTime, rotationElapsedTime;
@@ -31,25 +31,29 @@ public class CameraController : MonoBehaviour {
 		targetRotationOld = targetRotationNew;
 		targetRotationNew = target.transform.rotation;
 
-		//positionElapsedTime += Time.deltaTime; //time since last update frame
+		positionElapsedTime += Time.deltaTime; //time since last update frame
 		rotationElapsedTime += Time.deltaTime; //time since last update frame
 
-		//if (targetHasMoved)
-		//{
-		//	beginPosition = transform.position;
-		//	positionElapsedTime = 0;
-		//}
+        // if you DON'T want the camera POSITION to lerp (except during rotations), comment out the code below
+        if (targetHasMoved)
+        {
+            beginPosition = transform.position;
+            positionElapsedTime = 0;
+        }
 
-		if (targetHasTurned)
+        if (targetHasTurned)
 		{
-			beginPosition = transform.position;
-			beginRotation = transform.rotation;
+            // if you DON'T want the camera POSITION to lerp (except during rotations), use the code below
+            //beginPosition = transform.position;
+            beginRotation = transform.rotation;
 			rotationElapsedTime = 0;
 		}
 
-		if (rotationElapsedTime < rotationPeriod) transform.position = Vector3.Lerp(beginPosition, targetPositionNew, circleEaseOutTime(Mathf.Min(rotationElapsedTime / rotationPeriod, 1)));
-		else transform.position = target.transform.position;
+        // if you DON'T want the camera POSITION to lerp (except during rotations), use the code below
+        //if (rotationElapsedTime < rotationPeriod) transform.position = Vector3.Lerp(beginPosition, targetPositionNew, circleEaseOutTime(Mathf.Min(rotationElapsedTime / rotationPeriod, 1)));
+        //else transform.position = target.transform.position;
+        transform.position = Vector3.Lerp(beginPosition, targetPositionNew, linearTime(Mathf.Min(positionElapsedTime / movePeriod, 1)));
 
-		transform.rotation = Quaternion.Lerp(beginRotation, targetRotationNew, circleEaseOutTime(Mathf.Min(rotationElapsedTime / rotationPeriod, 1)));
+        transform.rotation = Quaternion.Lerp(beginRotation, targetRotationNew, circleEaseOutTime(Mathf.Min(rotationElapsedTime / rotationPeriod, 1)));
 	}
 }
