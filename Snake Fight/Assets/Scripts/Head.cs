@@ -37,7 +37,7 @@ public class Head : MonoBehaviour
         target = this;
         head = this;
 
-        updateInterval = GameObject.Find("GameController1").GetComponent<GameController>().updateInterval;
+        updateInterval = GameController.updateInterval;
         numberOfTails = 0;
 
         if (isPlayer)
@@ -74,7 +74,7 @@ public class Head : MonoBehaviour
         Debug.Log("Respawning");
         // pick a random respawn point and teleport there
         System.Random ran = new System.Random();
-        Transform[] options = GameObject.Find("GameController1").GetComponent<GameController>().spawnPointList;
+        Transform[] options = GameController.spawnPointList;
         Transform respawnTransform = options[ran.Next(0, options.Length)];
         transform.position = respawnTransform.position;
         transform.rotation = respawnTransform.rotation;

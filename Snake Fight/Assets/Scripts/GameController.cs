@@ -5,31 +5,31 @@ using System.Collections.Generic;
 public class GameController : MonoBehaviour
 {
     [SerializeField]
-    public Vector3 mapSize;
+    static public Vector3 mapSize;
+
+	[SerializeField]
+	static public float updateInterval;
 
     [SerializeField]
-    public float updateInterval;
+	static public int numberOfLives;
 
-    [SerializeField]
-    public int numberOfLives;
+	static public Vector3 food1Location;
+	static public Vector3 food2Location;
 
-    public Vector3 food1Location;
-    public Vector3 food2Location;
-
-    private Transform spawnPoint1;
-    private Transform spawnPoint2;
-    private Transform spawnPoint3;
-    private Transform spawnPoint4;
-    public Transform[] spawnPointList;
+	static private Transform spawnPoint1;
+	static private Transform spawnPoint2;
+	static private Transform spawnPoint3;
+	static private Transform spawnPoint4;
+	static public Transform[] spawnPointList;
 
 
     // Use this for initialization
     void Start()
     {
         mapSize.Set(15, 0, 15);
-        updateInterval = 0.25f;
+		updateInterval = 0.2f;
 
-        numberOfLives = 3;
+		numberOfLives = 3;
 
         spawnPoint1 = new GameObject().transform;
         spawnPoint1.position = new Vector3(-10, 0, -10);
@@ -52,7 +52,6 @@ public class GameController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            updateInterval = 0;
             LoadingScreenManager.LoadScene(0);
         }
 

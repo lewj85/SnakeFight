@@ -27,7 +27,7 @@ public class Food : MonoBehaviour
     protected Vector3 findLocation()
     {
         // get variable from script of another object
-        mapSize = GameObject.Find("GameController1").GetComponent<GameController>().mapSize;
+        mapSize = GameController.mapSize;
         // reset the count
         relocating = true;
         // note: y is set to 0 to keep on the same plane
