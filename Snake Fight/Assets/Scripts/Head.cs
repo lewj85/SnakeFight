@@ -85,7 +85,16 @@ public class Head : MonoBehaviour
         if (numberOfTails == 0) { return; }
         else
         {
-            target.destroyTails(whereToStop);
+            Head tmp;
+            while (target != whereToStop)
+            {
+                Debug.Log("Destroying a tail");
+                tmp = target.target;
+                // Destroy(target.GetComponent<MeshRenderer>());  // hides it
+                Destroy(target.gameObject);  // destroys it
+                target = tmp;
+                numberOfTails -= 1;
+            }   
         }
     }
 
@@ -103,6 +112,8 @@ public class Head : MonoBehaviour
                 GameObject.Find("Player1").GetComponent<Head>().livesRemaining -= 1;
                 if (GameObject.Find("Player1").GetComponent<Head>().livesRemaining != 0)
                 {
+                    // destroy own tails
+                    destroyTails(this);
                     respawn();
                 }
                 else
@@ -120,6 +131,10 @@ public class Head : MonoBehaviour
                     GameObject.Find("Player1").GetComponent<Head>().livesRemaining -= 1;
                     if (GameObject.Find("Player1").GetComponent<Head>().livesRemaining != 0)
                     {
+                        // destroy own tails
+                        destroyTails(this);
+                        // destroy the enemy tails from collision tail to the end
+                        //destroyTails(collision.gameObject.GetComponent<Tail>().target);
                         respawn();
                     }
                     else
@@ -137,6 +152,8 @@ public class Head : MonoBehaviour
                         GameObject.Find("Player1").GetComponent<Head>().livesRemaining -= 1;
                         if (GameObject.Find("Player1").GetComponent<Head>().livesRemaining != 0)
                         {
+                            // destroy own tails
+                            destroyTails(this);
                             respawn();
                         }
                         else
@@ -153,6 +170,8 @@ public class Head : MonoBehaviour
                 GameObject.Find("Player1").GetComponent<Head>().livesRemaining -= 1;
                 if (GameObject.Find("Player1").GetComponent<Head>().livesRemaining != 0)
                 {
+                    // destroy own tails
+                    destroyTails(this);
                     respawn();
                 }
                 else
@@ -172,6 +191,8 @@ public class Head : MonoBehaviour
                 GameObject.Find("AI1").GetComponent<Head>().livesRemaining -= 1;
                 if (GameObject.Find("AI1").GetComponent<Head>().livesRemaining != 0)
                 {
+                    // destroy own tails
+                    destroyTails(this);
                     respawn();
                 }
                 else
@@ -189,6 +210,8 @@ public class Head : MonoBehaviour
                     GameObject.Find("AI1").GetComponent<Head>().livesRemaining -= 1;
                     if (GameObject.Find("AI1").GetComponent<Head>().livesRemaining != 0)
                     {
+                        // destroy own tails
+                        destroyTails(this);
                         respawn();
                     }
                     else
@@ -207,6 +230,8 @@ public class Head : MonoBehaviour
                         GameObject.Find("AI1").GetComponent<Head>().livesRemaining -= 1;
                         if (GameObject.Find("AI1").GetComponent<Head>().livesRemaining != 0)
                         {
+                            // destroy own tails
+                            destroyTails(this);
                             respawn();
                         }
                         else
@@ -224,11 +249,13 @@ public class Head : MonoBehaviour
                 GameObject.Find("AI1").GetComponent<Head>().livesRemaining -= 1;
                 if (GameObject.Find("AI1").GetComponent<Head>().livesRemaining != 0)
                 {
+                    // destroy own tails
+                    destroyTails(this);
                     respawn();
                 }
                 else
                 {
-                    // leaving commented for testing
+                    // leaving commented out for testing
                     //LoadingScreenManager.LoadScene(0);
                 }
             }
