@@ -23,6 +23,13 @@ public class GameController : MonoBehaviour
 	static public Transform[] spawnPointList;
 
 
+    public bool locationIsTaken(Vector3 locationToCheck)
+    {
+        float radius = 0.4f;
+        return Physics.CheckSphere(locationToCheck, radius);
+    }
+
+
     // Use this for initialization
     void Start()
     {

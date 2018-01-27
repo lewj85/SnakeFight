@@ -75,7 +75,17 @@ public class Head : MonoBehaviour
         // pick a random respawn point and teleport there
         System.Random ran = new System.Random();
         Transform[] options = GameController.spawnPointList;
-        Transform respawnTransform = options[ran.Next(0, options.Length)];
+        Vector3 respawnLocation;
+        Transform respawnTransform;
+        do
+        {
+            respawnTransform = options[ran.Next(0, options.Length)];
+            respawnLocation = respawnTransform.position;
+        
+        // TODO: fix this so if all 4 spawnpoints are occupied, it won't crash the game - consider randomizing the spawn points 
+        // another solution would be to prevent players from entering spawn zones - give them a 'safe' starting area but force them out of it
+        } while (Physics.CheckSphere(respawnLocation, 0.4f));  // loops while there's a collision at the chosen respawn location
+        
         transform.position = respawnTransform.position;
         transform.rotation = respawnTransform.rotation;
     }
