@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Food : MonoBehaviour
 {
-
     private Vector3 mapSize;
 
     private int cyclesSinceTrigger;

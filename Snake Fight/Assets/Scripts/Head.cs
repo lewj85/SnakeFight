@@ -4,8 +4,9 @@ using System;
 public class Head : MonoBehaviour
 {
     public int livesRemaining;
-    private float updateInterval;
-    private float elapsed;
+    private float _updateInterval;
+    private float _elapsed;
+    private Vector3 mapSize;
 
     [SerializeField]
     private bool isPlayer;
@@ -14,6 +15,8 @@ public class Head : MonoBehaviour
     public Material m;
     [SerializeField]
     public int numberOfTails;
+
+    private int _effectTimer;
 
     // Save the start location for respawning
     public Transform startingTransform;
@@ -33,11 +36,13 @@ public class Head : MonoBehaviour
         // TODO: add this after you make the GameController create the Player Head
         //livesRemaining = GameObject.Find("GameController1").GetComponent<GameController>().numberOfLives;
         livesRemaining = GameController.numberOfLives;
-        updateInterval = GameController.updateInterval;
+        _updateInterval = GameController.updateInterval;
+        mapSize = GameController.mapSize;
         startingTransform = transform;
         target = this;
         head = this;
         numberOfTails = 0;
+        extend();  // make a tail
 
         if (isPlayer)
         {
@@ -61,7 +66,7 @@ public class Head : MonoBehaviour
     {
         Head tmp = target;  // save current target (last tail) temporarily to set as new tail's target
         target = Instantiate(tail, target.transform).GetComponent<Tail>();  // make a new tail at current target's location (transform)
-        target.updateInterval = updateInterval;
+        target._updateInterval = _updateInterval;
         target.transform.parent = null;  // necessary in case parent head is moving in a different direction?
         target.head = this;  // set this as head
         target.target = tmp;  // set target to temporary last tail we saved before
@@ -87,6 +92,7 @@ public class Head : MonoBehaviour
         
         transform.position = respawnTransform.position;
         transform.rotation = respawnTransform.rotation;
+        extend(); // make a tail
     }
 
     public virtual void destroyTails(Head whereToStop)
@@ -130,6 +136,15 @@ public class Head : MonoBehaviour
                     LoadingScreenManager.LoadScene(0);
                 }
             }
+
+            // if Player runes into an Item - speed boost
+            if (collision.gameObject.GetComponent<Item>())
+            {
+                collision.gameObject.GetComponent<Item>().transform.position = new Vector3(UnityEngine.Random.Range(-(int)mapSize.x, (int)mapSize.x), 0.0f, UnityEngine.Random.Range(-(int)mapSize.z, (int)mapSize.z));
+                this._updateInterval = GameController.updateInterval / 2;
+                _effectTimer = 150;  // lasts ~3 seconds
+            }
+
             // if Player runs into a Tail
             else if (collision.gameObject.GetComponent<Tail>())
             {
@@ -143,7 +158,7 @@ public class Head : MonoBehaviour
                         // destroy own tails
                         destroyTails(this);
                         // destroy the enemy tails from collision tail to the end
-                        //destroyTails(collision.gameObject.GetComponent<Tail>().target);
+                        collision.gameObject.GetComponent<Tail>().head.destroyTails(collision.gameObject.GetComponent<Tail>().target);
                         respawn();
                     }
                     else
@@ -206,8 +221,7 @@ public class Head : MonoBehaviour
                 }
                 else
                 {
-                    // leaving commented for testing
-                    //LoadingScreenManager.LoadScene(0);
+                    LoadingScreenManager.LoadScene(0);
                 }
             }
             else if (collision.gameObject.GetComponent<Tail>())
@@ -221,12 +235,13 @@ public class Head : MonoBehaviour
                     {
                         // destroy own tails
                         destroyTails(this);
+                        // destroy the enemy tails from collision tail to the end
+                        collision.gameObject.GetComponent<Tail>().head.destroyTails(collision.gameObject.GetComponent<Tail>().target);
                         respawn();
                     }
                     else
                     {
-                        // leaving commented for testing
-                        //LoadingScreenManager.LoadScene(0);
+                        LoadingScreenManager.LoadScene(0);
                     }
                 }
                 // if AI runs into its own tail
@@ -274,15 +289,17 @@ public class Head : MonoBehaviour
     void Update()
     {
         // update time
-        elapsed += Time.deltaTime;
+        _elapsed += Time.deltaTime;
+        _effectTimer -= 1;
+        if (_effectTimer < 0) { _updateInterval = GameController.updateInterval; }
 
         // player controls go here
         if (isPlayer)
         {
-            if (elapsed >= updateInterval)
+            if (_elapsed >= _updateInterval)
             {
                 target.move();
-                elapsed = 0;
+                _elapsed = 0;
             }
         
             if (Input.GetButtonDown("Right")) rotation = new Vector3(0, 90, 0);
@@ -300,10 +317,10 @@ public class Head : MonoBehaviour
         // AI pathing goes here
         else
         {
-            if (elapsed >= updateInterval)
+            if (_elapsed >= _updateInterval)
             {
                 target.move();
-                elapsed = 0;
+                _elapsed = 0;
             }
             // TODO: remove, this is for testing only - press B to extend
             if (Input.GetKeyDown(KeyCode.B))
