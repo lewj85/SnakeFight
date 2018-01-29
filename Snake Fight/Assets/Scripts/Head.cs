@@ -32,12 +32,11 @@ public class Head : MonoBehaviour
     {
         // TODO: add this after you make the GameController create the Player Head
         //livesRemaining = GameObject.Find("GameController1").GetComponent<GameController>().numberOfLives;
-        livesRemaining = 3;
+        livesRemaining = GameController.numberOfLives;
+        updateInterval = GameController.updateInterval;
         startingTransform = transform;
         target = this;
         head = this;
-
-        updateInterval = GameController.updateInterval;
         numberOfTails = 0;
 
         if (isPlayer)

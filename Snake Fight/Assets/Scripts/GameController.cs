@@ -15,13 +15,14 @@ public class GameController : MonoBehaviour
 
 	static public Vector3 food1Location;
 	static public Vector3 food2Location;
+    static public Vector3 item1Location;
+    static public int timeUntilItem1Spawn;
 
 	static private Transform spawnPoint1;
 	static private Transform spawnPoint2;
 	static private Transform spawnPoint3;
 	static private Transform spawnPoint4;
 	static public Transform[] spawnPointList;
-
 
     public bool locationIsTaken(Vector3 locationToCheck)
     {
@@ -34,9 +35,9 @@ public class GameController : MonoBehaviour
     void Start()
     {
         mapSize.Set(15, 0, 15);
-		updateInterval = 0.2f;
-
-		numberOfLives = 3;
+        updateInterval = 0.25f;
+        numberOfLives = 999;
+        timeUntilItem1Spawn = 300;
 
         spawnPoint1 = new GameObject().transform;
         spawnPoint1.position = new Vector3(-10, 0, -10);
@@ -72,6 +73,17 @@ public class GameController : MonoBehaviour
         if (GameObject.Find("AI1"))
         {
             if (GameObject.Find("AI1").GetComponent<Head>().livesRemaining == 0) { Debug.Log("AI1 is dead"); }
+        }
+
+        timeUntilItem1Spawn -= 1;
+        if (timeUntilItem1Spawn < 0)
+        {
+            do
+            {
+                item1Location = new Vector3(Random.Range(-(int)mapSize.x, (int)mapSize.x), 0.0f, Random.Range(-(int)mapSize.z, (int)mapSize.z));
+            } while (locationIsTaken(item1Location));
+            GameObject.Find("Item1").transform.position = item1Location;
+            timeUntilItem1Spawn = 300;  // reset spawn timer to ~5 seconds - let it bounce around to be 'elusive'
         }
     }
 }
