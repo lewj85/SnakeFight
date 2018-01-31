@@ -18,7 +18,10 @@ public class GameController : MonoBehaviour
     static public Vector3 item1Location;
     static public int timeUntilItem1Spawn;
 
-	static private Transform spawnPoint1;
+    static public int timeUntilWallSwap;
+    static public Wall[] wallList;
+
+    static private Transform spawnPoint1;
 	static private Transform spawnPoint2;
 	static private Transform spawnPoint3;
 	static private Transform spawnPoint4;
@@ -38,6 +41,7 @@ public class GameController : MonoBehaviour
         updateInterval = 0.25f;
         numberOfLives = 999;
         timeUntilItem1Spawn = 300;
+        timeUntilWallSwap = 400;
 
         spawnPoint1 = new GameObject().transform;
         spawnPoint1.position = new Vector3(-10, 0, -10);
@@ -75,6 +79,7 @@ public class GameController : MonoBehaviour
             if (GameObject.Find("AI1").GetComponent<Head>().livesRemaining == 0) { Debug.Log("AI1 is dead"); }
         }
 
+        // Item1 spawn controller - speed boost
         timeUntilItem1Spawn -= 1;
         if (timeUntilItem1Spawn < 0)
         {
@@ -84,6 +89,26 @@ public class GameController : MonoBehaviour
             } while (locationIsTaken(item1Location));
             GameObject.Find("Item1").transform.position = item1Location;
             timeUntilItem1Spawn = 300;  // reset spawn timer to ~5 seconds - let it bounce around to be 'elusive'
+        }
+
+        // Middle Wall Swap controller
+        timeUntilWallSwap -= 1;
+        if (timeUntilWallSwap < 0)
+        {
+            // pick a wall
+            wallList = new Wall[] { GameObject.Find("Wall_Middle_West").GetComponent<Wall>(), GameObject.Find("Wall_Middle_East").GetComponent<Wall>(), GameObject.Find("Wall_Middle_North").GetComponent<Wall>(), GameObject.Find("Wall_Middle_South").GetComponent<Wall>() };
+            Wall whichWall = wallList[Random.Range(0, wallList.Length)];
+
+            if (whichWall.transform.position.y == 0)
+            {
+                whichWall.transform.position = new Vector3(whichWall.transform.position.x, -2, whichWall.transform.position.z);
+            }
+            else
+            {
+                whichWall.transform.position = new Vector3(whichWall.transform.position.x, 0, whichWall.transform.position.z);
+            }
+            // reset timer
+            timeUntilWallSwap = 400;
         }
     }
 }
