@@ -8,7 +8,7 @@ public class Tail : Head
         GetComponent<Renderer>().material = head.m;
     }
 
-    void Update()
+    void Update()  // don't delete this! just leave empty or bug
     {
 
     }
@@ -22,21 +22,21 @@ public class Tail : Head
         }
     }
 
-    public override void destroyTails(Head whereToStop)
-    {
-        // base case, stop recursion when you reach the first 
-        if (target == whereToStop)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            // uses "head" recursion, haha
-            target.destroyTails(whereToStop);
-            target = head;
-            Destroy(this);
-        }
-    }
+    //public override void destroyTails(Head whereToStop)
+    //{
+    //    // base case, stop recursion when you reach the first 
+    //    if (target == whereToStop)
+    //    {
+    //        Destroy(this);
+    //    }
+    //    else
+    //    {
+    //        // uses "head" recursion, haha
+    //        target.destroyTails(whereToStop);
+    //        target = head;
+    //        Destroy(this);
+    //    }
+    //}
 
     public override void OnTriggerEnter(Collider collision)
     {

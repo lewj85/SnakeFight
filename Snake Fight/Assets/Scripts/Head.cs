@@ -95,7 +95,7 @@ public class Head : MonoBehaviour
         extend(); // make a tail
     }
 
-    public virtual void destroyTails(Head whereToStop)
+    public void destroyTails(Head whereToStop)  // not virtual anymore
     {
         if (numberOfTails == 0) { return; }
         else

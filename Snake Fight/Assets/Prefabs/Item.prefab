@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4208448090081124}
   - component: {fileID: 33041882717314566}
-  - component: {fileID: 136990838580092646}
+  - component: {fileID: 135109863706243988}
   - component: {fileID: 23916823599248426}
   - component: {fileID: 114914086064964746}
   m_Layer: 0
@@ -93,8 +93,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 729f4818374becf45b95a7483cc3d805, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!136 &136990838580092646
-CapsuleCollider:
+--- !u!135 &135109863706243988
+SphereCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -102,7 +102,6 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
+  serializedVersion: 2
   m_Radius: 0.4
-  m_Height: 0.9
-  m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
