@@ -17,13 +17,4 @@ public class Wall : MonoBehaviour
 
     }
 
-    public virtual void OnTriggerEnter(Collider collision)
-    {
-        // if Wall spawns on a Tail
-        if (collision.gameObject.GetComponent<Tail>())
-        {
-            Debug.Log("Wall spawned on a Tail");
-            collision.gameObject.GetComponent<Tail>().head.destroyTails(collision.gameObject.GetComponent<Tail>());  // not working?
-        }
-    }
 }

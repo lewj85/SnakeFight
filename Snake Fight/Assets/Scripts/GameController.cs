@@ -42,7 +42,7 @@ public class GameController : MonoBehaviour
         updateInterval = 0.25f;
         numberOfLives = 999;
         timeUntilItem1Spawn = 300;
-        timeUntilWallSwap = 400;
+        timeUntilWallSwap = 150;
 
         // pick a wall to start
         wallList = new Wall[] { GameObject.Find("Wall_Middle_West").GetComponent<Wall>(), GameObject.Find("Wall_Middle_East").GetComponent<Wall>(), GameObject.Find("Wall_Middle_North").GetComponent<Wall>(), GameObject.Find("Wall_Middle_South").GetComponent<Wall>() };
@@ -109,7 +109,7 @@ public class GameController : MonoBehaviour
                 whichWall.transform.position = new Vector3(whichWall.transform.position.x, 0, whichWall.transform.position.z);
             }
             // reset timer
-            timeUntilWallSwap = 400;
+            timeUntilWallSwap = 150;
             // pick the next wall
             whichWall = wallList[Random.Range(0, wallList.Length)];
         }

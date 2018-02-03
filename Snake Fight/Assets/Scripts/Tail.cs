@@ -41,5 +41,13 @@ public class Tail : Head
     public override void OnTriggerEnter(Collider collision)
     {
         // need to override because Tails will inherit and run Head's OnTriggerEnter()
+        //Debug.Log("Tail collided with something");
+
+        // if Wall spawns on a Tail
+        if (collision.gameObject.GetComponent<Wall>())
+        {
+            Debug.Log("Wall spawned on a Tail");
+            head.destroyTails(target);
+        }
     }
 }
