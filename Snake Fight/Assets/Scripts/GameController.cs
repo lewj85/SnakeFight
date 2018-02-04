@@ -15,9 +15,14 @@ public class GameController : MonoBehaviour
 
 	static public Vector3 food1Location;
 	static public Vector3 food2Location;
-    static public Vector3 item1Location;
-    static public int timeUntilItem1Spawn;
 
+    public Material itemMaterial;
+    public Material itemBlinkingMaterial;
+    static public Vector3 item1Location;
+    static public int timeUntilItemSpawn;
+
+    public Material wallMaterial;
+    public Material wallBlinkingMaterial;
     static public int timeUntilWallSwap;
     static public Wall[] wallList;
     static public Wall whichWall;
@@ -41,8 +46,8 @@ public class GameController : MonoBehaviour
         mapSize.Set(15, 0, 15);
         updateInterval = 0.25f;
         numberOfLives = 999;
-        timeUntilItem1Spawn = 300;
-        timeUntilWallSwap = 150;
+        timeUntilItemSpawn = 300;
+        timeUntilWallSwap = 250;
 
         // pick a wall to start
         wallList = new Wall[] { GameObject.Find("Wall_Middle_West").GetComponent<Wall>(), GameObject.Find("Wall_Middle_East").GetComponent<Wall>(), GameObject.Find("Wall_Middle_North").GetComponent<Wall>(), GameObject.Find("Wall_Middle_South").GetComponent<Wall>() };
@@ -85,21 +90,43 @@ public class GameController : MonoBehaviour
         }
 
         // Item1 spawn controller - speed boost
-        timeUntilItem1Spawn -= 1;
-        if (timeUntilItem1Spawn < 0)
+        timeUntilItemSpawn -= 1;
+        if (timeUntilItemSpawn < 0)
         {
             do
             {
                 item1Location = new Vector3(Random.Range(-(int)mapSize.x, (int)mapSize.x), 0.0f, Random.Range(-(int)mapSize.z, (int)mapSize.z));
             } while (locationIsTaken(item1Location));
             GameObject.Find("Item1").transform.position = item1Location;
-            timeUntilItem1Spawn = 300;  // reset spawn timer to ~5 seconds - let it bounce around to be 'elusive'
+            GameObject.Find("Item1").GetComponent<Renderer>().material = itemMaterial;
+            timeUntilItemSpawn = 300;  // reset spawn timer to ~5 seconds - let it bounce around to be 'elusive'
+        }
+        else if (timeUntilItemSpawn < 20)
+        {
+            GameObject.Find("Item1").GetComponent<Renderer>().material = itemBlinkingMaterial;
+        }
+        else if (timeUntilItemSpawn < 40)
+        {
+            GameObject.Find("Item1").GetComponent<Renderer>().material = itemMaterial;
+        }
+        else if (timeUntilItemSpawn < 60)
+        {
+            GameObject.Find("Item1").GetComponent<Renderer>().material = itemBlinkingMaterial;
+        }
+        else if (timeUntilItemSpawn < 80)
+        {
+            GameObject.Find("Item1").GetComponent<Renderer>().material = itemMaterial;
+        }
+        else if (timeUntilItemSpawn < 100)
+        {
+            GameObject.Find("Item1").GetComponent<Renderer>().material = itemBlinkingMaterial;
         }
 
         // Middle Wall Swap controller
         timeUntilWallSwap -= 1;
         if (timeUntilWallSwap < 0)
         {
+            whichWall.GetComponent<Renderer>().material = wallMaterial;
             if (whichWall.transform.position.y == 0)
             {
                 whichWall.transform.position = new Vector3(whichWall.transform.position.x, -2, whichWall.transform.position.z);
@@ -109,13 +136,33 @@ public class GameController : MonoBehaviour
                 whichWall.transform.position = new Vector3(whichWall.transform.position.x, 0, whichWall.transform.position.z);
             }
             // reset timer
-            timeUntilWallSwap = 150;
+            timeUntilWallSwap = 250;
             // pick the next wall
             whichWall = wallList[Random.Range(0, wallList.Length)];
         }
-        else if (timeUntilWallSwap < 100 && whichWall.transform.position.y == -2)  // if the wall is down and about to pop up, peek it to warn players it's coming
+        else if (timeUntilWallSwap < 20 && whichWall.transform.position.y == 0)
         {
-            whichWall.transform.position = new Vector3(whichWall.transform.position.x, -0.99f, whichWall.transform.position.z);
+            whichWall.GetComponent<Renderer>().material = wallBlinkingMaterial;
+        }
+        else if (timeUntilWallSwap < 40 && whichWall.transform.position.y == 0)
+        {
+            whichWall.GetComponent<Renderer>().material = wallMaterial;
+        }
+        else if (timeUntilWallSwap < 60 && whichWall.transform.position.y == 0)
+        {
+            whichWall.GetComponent<Renderer>().material = wallBlinkingMaterial;
+        }
+        else if (timeUntilWallSwap < 80 && whichWall.transform.position.y == 0)
+        {
+            whichWall.GetComponent<Renderer>().material = wallMaterial;
+        }
+        else if (timeUntilWallSwap < 100)
+        {
+            whichWall.GetComponent<Renderer>().material = wallBlinkingMaterial;
+            if (whichWall.transform.position.y == -2)  // if the wall is down and about to pop up, peek it to warn players it's coming
+            {
+                whichWall.transform.position = new Vector3(whichWall.transform.position.x, -0.99f, whichWall.transform.position.z);
+            }
         }
     }
 }
