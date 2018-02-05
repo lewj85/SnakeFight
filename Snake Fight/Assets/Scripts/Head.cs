@@ -18,8 +18,7 @@ public class Head : MonoBehaviour
 
     private int _effectTimer;
 
-    // Save the start location for respawning
-    public Transform startingTransform;
+    public Transform startingTransform;  // save the start location for respawning
 
     //Transform View;
     Vector3 rotation;
@@ -54,7 +53,7 @@ public class Head : MonoBehaviour
 
     public virtual void move()
     {
-        transform.Rotate(rotation);
+        transform.Rotate(rotation); // TODO: move this line into Update() but check for rotating more than once - this will rotate immediately rather than waiting for updateInterval
         // round values
         //Vector3 tmp = transform.forward;
         //transform.position += new Vector3(Mathf.Round(tmp.x), Mathf.Round(tmp.y), Mathf.Round(tmp.z));
@@ -296,17 +295,17 @@ public class Head : MonoBehaviour
         // player controls go here
         if (isPlayer)
         {
+            // move every updateInterval
             if (_elapsed >= _updateInterval)
             {
                 target.move();
                 _elapsed = 0;
             }
-        
+
+            // ROTATION CONTROLS
+            // can rotate once every update, but no more than once in either direction
             if (Input.GetButtonDown("Right")) rotation = new Vector3(0, 90, 0);
             else if (Input.GetButtonDown("Left")) rotation = new Vector3(0, -90, 0);
-            // 3D movement
-            //else if (Input.GetButtonDown("Up")) rotation = new Vector3(-90, 0, 0);
-            //else if (Input.GetButtonDown("Down")) rotation = new Vector3(90, 0, 0);
 
             // TODO: remove, this is for testing only
             if (Input.GetKeyDown(KeyCode.Space))

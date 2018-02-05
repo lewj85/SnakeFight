@@ -13,6 +13,5 @@ Features:
 
 To Do:  
 -Move food after a set amount of time  
--Items should blink before despawning  
 -Camera should start turning instantly after keypress rather than wait for snake (don't turn camera more than 90 degrees though!)  
 

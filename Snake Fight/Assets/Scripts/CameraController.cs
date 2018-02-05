@@ -13,19 +13,20 @@ public class CameraController : MonoBehaviour {
 	float movePeriod, rotationPeriod;
 
 	// Use this for initialization
-	void Start () {
+	void Start ()
+    {
 		movePeriod = GameController.updateInterval;
 		rotationPeriod = GameController.updateInterval * 2.5f;
 	}
 
+    // lerp formulas
 	float linearTime(float t) { return t; }
-
 	float exponentialEaseOutTime(float t) { return t == 1 ? 1 : 1 - Mathf.Pow(2, -10 * t); }
-
 	float circleEaseOutTime(float t) { t -= 1; return Mathf.Sqrt(1 - t * t); }
 
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
 		targetPositionOld = targetPositionNew;
 		targetPositionNew = target.transform.position;
 		targetRotationOld = targetRotationNew;
@@ -41,11 +42,12 @@ public class CameraController : MonoBehaviour {
             positionElapsedTime = 0;
         }
 
+        // start turning camera immediately if the target has rotated
         if (targetHasTurned)
 		{
             // if you DON'T want the camera POSITION to lerp (except during rotations), use the code below
             //beginPosition = transform.position;
-            beginRotation = transform.rotation;
+            beginRotation = transform.rotation;  // use camera's current rotation as start
 			rotationElapsedTime = 0;
 		}
 
@@ -54,6 +56,7 @@ public class CameraController : MonoBehaviour {
         //else transform.position = target.transform.position;
         transform.position = Vector3.Lerp(beginPosition, targetPositionNew, linearTime(Mathf.Min(positionElapsedTime / movePeriod, 1)));
 
+        // use circleEaseOutTime for rotation, not linearTime
         transform.rotation = Quaternion.Lerp(beginRotation, targetRotationNew, circleEaseOutTime(Mathf.Min(rotationElapsedTime / rotationPeriod, 1)));
 	}
 }
