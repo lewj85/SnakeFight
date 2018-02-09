@@ -18,6 +18,30 @@ public class Head : MonoBehaviour
 
     private int _effectTimer;
 
+    private int nR;
+    private int numRightTurns
+    {
+        get { return nR; }
+        set
+        {
+            if (value > 2) nR = 2; // max value is 2
+            else if (value < 0) nR = 0; // min value is 0
+            else nR = value;
+        }
+    }
+
+    private int nL;
+    private int numLeftTurns
+    {
+        get { return nL; }
+        set
+        {
+            if (value > 2) nL = 2; // max value is 2
+            else if (value < 0) nL = 0; // min value is 0
+            else nL = value;
+        }
+    }
+
     public Transform startingTransform;  // save the start location for respawning
 
     //Transform View;
@@ -42,6 +66,8 @@ public class Head : MonoBehaviour
         head = this;
         numberOfTails = 0;
         extend();  // make a tail
+        numRightTurns = 1;
+        numLeftTurns = 1;
 
         if (isPlayer)
         {
@@ -53,12 +79,14 @@ public class Head : MonoBehaviour
 
     public virtual void move()
     {
-        transform.Rotate(rotation); // TODO: move this line into Update() but check for rotating more than once - this will rotate immediately rather than waiting for updateInterval
+        //transform.Rotate(rotation); 
         // round values
         //Vector3 tmp = transform.forward;
         //transform.position += new Vector3(Mathf.Round(tmp.x), Mathf.Round(tmp.y), Mathf.Round(tmp.z));
         transform.position += transform.forward;
-        rotation = Vector3.zero;  // reset immediately after moving
+        //rotation = Vector3.zero;  // reset immediately after moving
+        numRightTurns = 1;
+        numLeftTurns = 1;
     }
 
     public void extend()
@@ -304,8 +332,28 @@ public class Head : MonoBehaviour
 
             // ROTATION CONTROLS
             // can rotate once every update, but no more than once in either direction
-            if (Input.GetButtonDown("Right")) rotation = new Vector3(0, 90, 0);
-            else if (Input.GetButtonDown("Left")) rotation = new Vector3(0, -90, 0);
+            if (Input.GetButtonDown("Right"))
+            {
+                if (numRightTurns > 0)
+                {
+                    rotation = new Vector3(0, 90, 0);
+                    transform.Rotate(rotation);
+                    rotation = Vector3.zero;  // reset immediately after rotating
+                    numRightTurns -= 1;
+                    numLeftTurns += 1;
+                }
+            }
+            else if (Input.GetButtonDown("Left"))
+            {
+                if (numLeftTurns > 0)
+                {
+                    rotation = new Vector3(0, -90, 0);
+                    transform.Rotate(rotation);
+                    rotation = Vector3.zero;  // reset immediately after rotating
+                    numRightTurns += 1;
+                    numLeftTurns -= 1;
+                }
+            }
 
             // TODO: remove, this is for testing only
             if (Input.GetKeyDown(KeyCode.Space))

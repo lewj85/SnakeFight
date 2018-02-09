@@ -27,10 +27,10 @@ public class CameraController : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-		targetPositionOld = targetPositionNew;
-		targetPositionNew = target.transform.position;
-		targetRotationOld = targetRotationNew;
-		targetRotationNew = target.transform.rotation;
+		targetPositionOld = targetPositionNew;  // position in last Update()
+		targetPositionNew = target.transform.position;  // get new position
+		targetRotationOld = targetRotationNew;  // rotation in last Update()
+		targetRotationNew = target.transform.rotation;  // get new rotation
 
 		positionElapsedTime += Time.deltaTime; //time since last update frame
 		rotationElapsedTime += Time.deltaTime; //time since last update frame
