@@ -16,6 +16,9 @@ public class Head : MonoBehaviour
     [SerializeField]
     public int numberOfTails;
 
+    public KeyCode kcRight;
+    public KeyCode kcLeft;
+
     private int _effectTimer;
 
     private int nR;
@@ -332,7 +335,7 @@ public class Head : MonoBehaviour
 
             // ROTATION CONTROLS
             // can rotate once every update, but no more than once in either direction
-            if (Input.GetButtonDown("Right"))
+            if (Input.GetKeyDown(kcRight))
             {
                 if (numRightTurns > 0)
                 {
@@ -343,7 +346,7 @@ public class Head : MonoBehaviour
                     numLeftTurns += 1;
                 }
             }
-            else if (Input.GetButtonDown("Left"))
+            else if (Input.GetKeyDown(kcLeft))
             {
                 if (numLeftTurns > 0)
                 {
