@@ -13,8 +13,10 @@ public class GameController : MonoBehaviour
     [SerializeField]
 	static public int numberOfLives;
 
+    static public int numPlayers;
+
 	static public Vector3 food1Location;
-	static public Vector3 food2Location;
+	static public Vector3 food2Location; 
 
     public Material itemMaterial;
     public Material itemBlinkingMaterial;
@@ -43,9 +45,25 @@ public class GameController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        if (PlayerPrefs.HasKey("numPlayers"))
+        {
+            numPlayers = PlayerPrefs.GetInt("numPlayers");
+        }
+        else
+        {
+            Debug.Log("numPlayers not set");
+            numPlayers = 1;
+        }
+
+        // if 2 players, add camera2 and split screen
+        //if (numPlayers == 2)
+        //{
+        //    Instantiate(camera2, target.transform);
+        //}
+
         mapSize.Set(15, 0, 15);
         updateInterval = 0.25f;
-        numberOfLives = 999;
+        numberOfLives = 9999;
         timeUntilItemSpawn = 300;
         timeUntilWallSwap = 250;
 

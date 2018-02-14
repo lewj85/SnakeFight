@@ -4,6 +4,11 @@ using UnityEngine.SceneManagement;
 
 public class MenuButtons : MonoBehaviour {
 
+    public void SetPlayerNum(int numPlayers)
+    {
+        PlayerPrefs.SetInt("numPlayers", numPlayers);
+    }
+
     public void LoadSceneNum(int num)
     {
         if (num < 0 || num >= SceneManager.sceneCountInBuildSettings)
