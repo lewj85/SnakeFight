@@ -13,26 +13,30 @@ public class GameController : MonoBehaviour
     [SerializeField]
 	static public int numberOfLives;
 
+    [SerializeField]
     static public int numPlayers;
 
-	static public Vector3 food1Location;
-	static public Vector3 food2Location; 
+    private GameObject camera1;
+    //public GameObject camera2;
+
+	public Vector3 food1Location;
+	public Vector3 food2Location; 
 
     public Material itemMaterial;
     public Material itemBlinkingMaterial;
-    static public Vector3 item1Location;
-    static public int timeUntilItemSpawn;
+    public Vector3 item1Location;
+    public int timeUntilItemSpawn;
 
     public Material wallMaterial;
     public Material wallBlinkingMaterial;
-    static public int timeUntilWallSwap;
-    static public Wall[] wallList;
-    static public Wall whichWall;
+    public int timeUntilWallSwap;
+    public Wall[] wallList;
+    public Wall whichWall;
 
-    static private Transform spawnPoint1;
-	static private Transform spawnPoint2;
-	static private Transform spawnPoint3;
-	static private Transform spawnPoint4;
+    private Transform spawnPoint1;
+	private Transform spawnPoint2;
+	private Transform spawnPoint3;
+	private Transform spawnPoint4;
 	static public Transform[] spawnPointList;
 
     public bool locationIsTaken(Vector3 locationToCheck)
@@ -48,6 +52,7 @@ public class GameController : MonoBehaviour
         if (PlayerPrefs.HasKey("numPlayers"))
         {
             numPlayers = PlayerPrefs.GetInt("numPlayers");
+            Debug.Log(numPlayers);
         }
         else
         {
@@ -56,10 +61,11 @@ public class GameController : MonoBehaviour
         }
 
         // if 2 players, add camera2 and split screen
-        //if (numPlayers == 2)
-        //{
-        //    Instantiate(camera2, target.transform);
-        //}
+        if (numPlayers == 2)
+        {
+            camera1 = GameObject.Find("Camera1");
+            camera1.GetComponent<Camera>().rect = new Rect(0.0f, 0.0f, 0.5f, 1.0f); // x, y, w, h
+        }
 
         mapSize.Set(15, 0, 15);
         updateInterval = 0.25f;
@@ -68,7 +74,8 @@ public class GameController : MonoBehaviour
         timeUntilWallSwap = 250;
 
         // pick a wall to start
-        wallList = new Wall[] { GameObject.Find("Wall_Middle_West").GetComponent<Wall>(), GameObject.Find("Wall_Middle_East").GetComponent<Wall>(), GameObject.Find("Wall_Middle_North").GetComponent<Wall>(), GameObject.Find("Wall_Middle_South").GetComponent<Wall>() };
+        wallList = new Wall[] { GameObject.Find("Wall_Middle_West").GetComponent<Wall>(), GameObject.Find("Wall_Middle_East").GetComponent<Wall>(),
+            GameObject.Find("Wall_Middle_North").GetComponent<Wall>(), GameObject.Find("Wall_Middle_South").GetComponent<Wall>() };
         whichWall = wallList[Random.Range(0, wallList.Length)];
 
         spawnPoint1 = new GameObject().transform;
