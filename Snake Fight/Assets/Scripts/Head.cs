@@ -15,6 +15,10 @@ public class Head : MonoBehaviour
     public Material m;
     [SerializeField]
     public int numberOfTails;
+    [SerializeField]
+    public Vector3 objectiveLocation;
+    [SerializeField]
+    public int objectiveDistance;
 
     public KeyCode kcRight;
     public KeyCode kcLeft;
@@ -369,6 +373,54 @@ public class Head : MonoBehaviour
         {
             if (_elapsed >= _updateInterval)
             {
+                // compare food locations to head location - choose closest - check for collisions - rotate as needed
+                Vector3 food1Loc = GameObject.Find("GameController1").GetComponent<GameController>().food1Location;
+                Vector3 food2Loc = GameObject.Find("GameController1").GetComponent<GameController>().food2Location;
+                Vector3 item1Loc = GameObject.Find("GameController1").GetComponent<GameController>().item1Location;
+
+                // manhattan distance of food1
+                int food1Dist = Math.Abs((int)(food1Loc.x - transform.position.x)) + Math.Abs((int)(food1Loc.z - transform.position.z));
+                int food2Dist = Math.Abs((int)(food2Loc.x - transform.position.x)) + Math.Abs((int)(food2Loc.z - transform.position.z));
+                int item1Dist = Math.Abs((int)(item1Loc.x - transform.position.x)) + Math.Abs((int)(item1Loc.z - transform.position.z));
+
+                if ((food1Dist >= food2Dist) && (food1Dist >= item1Dist))
+                {
+                    objectiveLocation = food1Loc;
+                    objectiveDistance = food1Dist;
+                }
+                else if ((food2Dist >= food1Dist) && (food2Dist >= item1Dist))
+                {
+                    objectiveLocation = food2Loc;
+                    objectiveDistance = food2Dist;
+                }
+                else // if ((item1Distance >= food1Distance) && (item1Distance >= food2Distance))
+                {
+                    objectiveLocation = item1Loc;
+                    objectiveDistance = item1Dist;
+                }
+                // TODO: add enemy heads as possible objectives here
+
+                //create a list of tuples {(forwardLoc, no rotation), (leftLoc, left rotation), (rightLoc, right rotation)}
+                //for (int i = 0; i < tupleList.Count; ++i)
+                //{
+                //    newPosition = tupleList[i].Item1;
+                //    newRotation = tupleList[i].Item2;
+                //    // check for collisions first
+                //    if (Physics.CheckSphere(newPosition, 0.45)) // 0.45 is sphere radius
+                //    { 
+                //        Debug.Log("Hit something"); 
+                //    }
+                //    else
+                //    {
+                //        int newDist = Math.Abs((int)(objectiveDistance.x - newPosition.x)) + Math.Abs((int)(objectiveDistance.z - newPosition.z));
+                //        if (newDist <= objectiveDistance)
+                //        {
+                //            rotation = newRotation;
+                //        }
+                //    }
+                //}
+
+                // move
                 target.move();
                 _elapsed = 0;
             }
@@ -377,16 +429,6 @@ public class Head : MonoBehaviour
             {
                 extend();
             }
-
-            // compare food locations to head location - order them by distance
-            Vector3 foodLoc = FindObjectOfType<Food>().transform.position;
-            //Debug.Log(foodLoc);
-
-            // loop
-                // pop next closest food
-                // create path array (adjust X first, then Z)
-                // check for obstruction along the way
-            // adjust position based on shortest path
         }
     }
 }
