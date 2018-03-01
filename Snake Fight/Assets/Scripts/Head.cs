@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 public class Head : MonoBehaviour
 {
@@ -9,7 +10,7 @@ public class Head : MonoBehaviour
     private Vector3 mapSize;
 
     [SerializeField]
-    private bool isPlayer;
+    public bool isPlayer;
     [SerializeField]
     private GameObject tail;
     public Material m;
@@ -52,7 +53,9 @@ public class Head : MonoBehaviour
     public Transform startingTransform;  // save the start location for respawning
 
     //Transform View;
-    Vector3 rotation;
+    Vector3 rotationLeft;
+    Vector3 rotationRight;
+    Vector3 rotationForward;
     Vector3 newXYZ;
 
     [SerializeField]
@@ -75,6 +78,18 @@ public class Head : MonoBehaviour
         extend();  // make a tail
         numRightTurns = 1;
         numLeftTurns = 1;
+
+        rotationLeft = new Vector3(0, -90, 0);
+        rotationRight = new Vector3(0, 90, 0);
+        rotationForward = new Vector3(0, 0, 0); //.zero;
+
+        if (PlayerPrefs.GetInt("numPlayers") == 1)
+        {
+            if (this.gameObject == GameObject.Find("Player2"))
+            {
+                isPlayer = false;
+            }
+        }
 
         if (isPlayer)
         {
@@ -246,8 +261,8 @@ public class Head : MonoBehaviour
             if (collision.gameObject.GetComponent<Wall>())
             {
                 Debug.Log("AI Head ran into Wall");
-                GameObject.Find("AI1").GetComponent<Head>().livesRemaining -= 1;
-                if (GameObject.Find("AI1").GetComponent<Head>().livesRemaining != 0)
+                GameObject.Find("Player2").GetComponent<Head>().livesRemaining -= 1;
+                if (GameObject.Find("Player2").GetComponent<Head>().livesRemaining != 0)
                 {
                     // destroy own tails
                     destroyTails(this);
@@ -264,8 +279,8 @@ public class Head : MonoBehaviour
                 if (collision.gameObject.GetComponent<Tail>().head != this)
                 {
                     Debug.Log("AI Head ran into enemy Tail");
-                    GameObject.Find("AI1").GetComponent<Head>().livesRemaining -= 1;
-                    if (GameObject.Find("AI1").GetComponent<Head>().livesRemaining != 0)
+                    GameObject.Find("Player2").GetComponent<Head>().livesRemaining -= 1;
+                    if (GameObject.Find("Player2").GetComponent<Head>().livesRemaining != 0)
                     {
                         // destroy own tails
                         destroyTails(this);
@@ -285,8 +300,8 @@ public class Head : MonoBehaviour
                     if (numberOfTails > 1)
                     {
                         Debug.Log("AI head ran into own Tail");
-                        GameObject.Find("AI1").GetComponent<Head>().livesRemaining -= 1;
-                        if (GameObject.Find("AI1").GetComponent<Head>().livesRemaining != 0)
+                        GameObject.Find("Player2").GetComponent<Head>().livesRemaining -= 1;
+                        if (GameObject.Find("Player2").GetComponent<Head>().livesRemaining != 0)
                         {
                             // destroy own tails
                             destroyTails(this);
@@ -304,8 +319,8 @@ public class Head : MonoBehaviour
             else if (collision.gameObject.GetComponent<Head>())
             {
                 Debug.Log("AI Head ran into enemy Head");
-                GameObject.Find("AI1").GetComponent<Head>().livesRemaining -= 1;
-                if (GameObject.Find("AI1").GetComponent<Head>().livesRemaining != 0)
+                GameObject.Find("Player2").GetComponent<Head>().livesRemaining -= 1;
+                if (GameObject.Find("Player2").GetComponent<Head>().livesRemaining != 0)
                 {
                     // destroy own tails
                     destroyTails(this);
@@ -343,9 +358,9 @@ public class Head : MonoBehaviour
             {
                 if (numRightTurns > 0)
                 {
-                    rotation = new Vector3(0, 90, 0);
-                    transform.Rotate(rotation);
-                    rotation = Vector3.zero;  // reset immediately after rotating
+                    //rotation = new Vector3(0, 90, 0);
+                    transform.Rotate(rotationRight);
+                    //rotation = Vector3.zero;  // reset immediately after rotating
                     numRightTurns -= 1;
                     numLeftTurns += 1;
                 }
@@ -354,9 +369,9 @@ public class Head : MonoBehaviour
             {
                 if (numLeftTurns > 0)
                 {
-                    rotation = new Vector3(0, -90, 0);
-                    transform.Rotate(rotation);
-                    rotation = Vector3.zero;  // reset immediately after rotating
+                    //rotation = new Vector3(0, -90, 0);
+                    transform.Rotate(rotationLeft);
+                    //rotation = Vector3.zero;  // reset immediately after rotating
                     numRightTurns += 1;
                     numLeftTurns -= 1;
                 }
@@ -400,25 +415,33 @@ public class Head : MonoBehaviour
                 }
                 // TODO: add enemy heads as possible objectives here
 
-                //create a list of tuples {(forwardLoc, no rotation), (leftLoc, left rotation), (rightLoc, right rotation)}
-                //for (int i = 0; i < tupleList.Count; ++i)
-                //{
-                //    newPosition = tupleList[i].Item1;
-                //    newRotation = tupleList[i].Item2;
-                //    // check for collisions first
-                //    if (Physics.CheckSphere(newPosition, 0.45)) // 0.45 is sphere radius
-                //    { 
-                //        Debug.Log("Hit something"); 
-                //    }
-                //    else
-                //    {
-                //        int newDist = Math.Abs((int)(objectiveDistance.x - newPosition.x)) + Math.Abs((int)(objectiveDistance.z - newPosition.z));
-                //        if (newDist <= objectiveDistance)
-                //        {
-                //            rotation = newRotation;
-                //        }
-                //    }
-                //}
+                //create list of 3 possible locations
+                Vector3 forwardLoc = transform.position + transform.forward;
+                transform.Rotate(rotationLeft);
+                Vector3 leftLoc = transform.position + transform.forward;
+                transform.Rotate(rotationRight);
+                transform.Rotate(rotationRight);
+                Vector3 rightLoc = transform.position + transform.forward;
+                transform.Rotate(rotationLeft);
+                Vector3[] rotations = { rotationForward, rotationLeft, rotationRight };
+                Vector3[] positions = { forwardLoc, leftLoc, rightLoc };
+
+                for (int i = 0; i < positions.Length; ++i)
+                {
+                    int newDist = Math.Abs((int)(objectiveLocation.x - positions[i].x)) + Math.Abs((int)(objectiveLocation.z - positions[i].z));
+                    if (newDist <= objectiveDistance)
+                    {
+                        if (newDist == 0 || !(Physics.CheckSphere(positions[i], 0.45f)) )
+                        {
+                            transform.Rotate(rotations[i]);
+                            break;
+                        }
+                        else
+                        {
+                            Debug.Log("Hit something. Trying new position.");
+                        }
+                    }
+                }
 
                 // move
                 target.move();
