@@ -86,10 +86,8 @@ public class Head : MonoBehaviour
 
         if (PlayerPrefs.GetInt("numPlayers") == 1)
         {
-            if (this.gameObject == GameObject.Find("Player2"))
-            {
-                isPlayer = false;
-            }
+            //if (this.gameObject == GameObject.Find("Player1")) { isPlayer = false; }  // for all AIs
+            if (this.gameObject == GameObject.Find("Player2")) { isPlayer = false; }
         }
 
         if (isPlayer)
