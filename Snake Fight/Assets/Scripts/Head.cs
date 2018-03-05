@@ -25,6 +25,7 @@ public class Head : MonoBehaviour
     public KeyCode kcLeft;
 
     private int _effectTimer;
+    private bool noneFound;
 
     private int nR;
     private int numRightTurns
@@ -426,20 +427,45 @@ public class Head : MonoBehaviour
                 Vector3[] rotations = { rotationForward, rotationLeft, rotationRight };
                 Vector3[] positions = { forwardLoc, leftLoc, rightLoc };
 
+                List<Vector3> allowableRotations = new List<Vector3>();
+
+                noneFound = false;
+
+                // check 3 locations for distances and collisions
                 for (int i = 0; i < positions.Length; ++i)
                 {
+                    if ( !(Physics.CheckSphere(positions[i], 0.45f)) )
+                    {
+                        allowableRotations.Add(rotations[i]);
+                    }
+                    // get distance from the new location
                     int newDist = Math.Abs((int)(objectiveLocation.x - positions[i].x)) + Math.Abs((int)(objectiveLocation.z - positions[i].z));
+                    // if the new location is closer than the current location
                     if (newDist <= objectiveDistance)
                     {
+                        // if there is no collision or we have reached the destination, end the loop early
                         if (newDist == 0 || !(Physics.CheckSphere(positions[i], 0.45f)) )
                         {
                             transform.Rotate(rotations[i]);
                             break;
                         }
-                        else
-                        {
-                            Debug.Log("Hit something. Trying new position.");
-                        }
+                    }
+
+                    // if you made it to this line on the last loop, no locations were found
+                    if (i == positions.Length)
+                    {
+                        noneFound = true;
+                    }
+                }
+
+                // if no closer locations were found, the closest item must be directly behind, so turn randomly
+                if (noneFound)
+                {
+                    // if there's at least 1 allowable rotation
+                    if (allowableRotations.Count > 0)
+                    {
+                        // rotate to the first one
+                        transform.Rotate(allowableRotations[0]);
                     }
                 }
 
