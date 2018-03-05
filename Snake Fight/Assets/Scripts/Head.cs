@@ -165,6 +165,14 @@ public class Head : MonoBehaviour
     // OnCollisionEnter wasn't working so I went with OnTriggerEnter and used RigidBody
     public virtual void OnTriggerEnter(Collider collision)
     {
+        // if anyone runs into an Item - speed boost
+        if (collision.gameObject.GetComponent<Item>())
+        {
+            collision.gameObject.GetComponent<Item>().transform.position = new Vector3(UnityEngine.Random.Range(-(int)mapSize.x, (int)mapSize.x), 0.0f, UnityEngine.Random.Range(-(int)mapSize.z, (int)mapSize.z));
+            this._updateInterval = GameController.updateInterval / 2;
+            _effectTimer = 150;  // lasts ~3 seconds
+        }
+
         if (isPlayer)
         {
             //Debug.Log("Player Head TriggerEnter");
@@ -184,14 +192,6 @@ public class Head : MonoBehaviour
                 {
                     LoadingScreenManager.LoadScene(0);
                 }
-            }
-
-            // if Player runes into an Item - speed boost
-            if (collision.gameObject.GetComponent<Item>())
-            {
-                collision.gameObject.GetComponent<Item>().transform.position = new Vector3(UnityEngine.Random.Range(-(int)mapSize.x, (int)mapSize.x), 0.0f, UnityEngine.Random.Range(-(int)mapSize.z, (int)mapSize.z));
-                this._updateInterval = GameController.updateInterval / 2;
-                _effectTimer = 150;  // lasts ~3 seconds
             }
 
             // if Player runs into a Tail
@@ -393,17 +393,17 @@ public class Head : MonoBehaviour
                 Vector3 food2Loc = GameObject.Find("GameController1").GetComponent<GameController>().food2Location;
                 Vector3 item1Loc = GameObject.Find("GameController1").GetComponent<GameController>().item1Location;
 
-                // manhattan distance of food1
+                // manhattan distance of objectives
                 int food1Dist = Math.Abs((int)(food1Loc.x - transform.position.x)) + Math.Abs((int)(food1Loc.z - transform.position.z));
                 int food2Dist = Math.Abs((int)(food2Loc.x - transform.position.x)) + Math.Abs((int)(food2Loc.z - transform.position.z));
                 int item1Dist = Math.Abs((int)(item1Loc.x - transform.position.x)) + Math.Abs((int)(item1Loc.z - transform.position.z));
 
-                if ((food1Dist >= food2Dist) && (food1Dist >= item1Dist))
+                if ((food1Dist <= food2Dist) && (food1Dist <= item1Dist))
                 {
                     objectiveLocation = food1Loc;
                     objectiveDistance = food1Dist;
                 }
-                else if ((food2Dist >= food1Dist) && (food2Dist >= item1Dist))
+                else if ((food2Dist <= food1Dist) && (food2Dist <= item1Dist))
                 {
                     objectiveLocation = food2Loc;
                     objectiveDistance = food2Dist;
