@@ -7,7 +7,7 @@ public class Head : MonoBehaviour
     public int livesRemaining;
     private float _updateInterval;
     private float _elapsed;
-    private Vector3 mapSize;
+    //private Vector3 mapSize;
 
     [SerializeField]
     public bool isPlayer;
@@ -20,13 +20,16 @@ public class Head : MonoBehaviour
     public Vector3 objectiveLocation;
     [SerializeField]
     public int objectiveDistance;
+    [SerializeField]
+    public Vector3[] positions;
+    public Vector3[] rotations;
 
     public KeyCode kcRight;
     public KeyCode kcLeft;
 
     private int _effectTimer;
     private bool noneFound;
-
+    
     private int nR;
     private int numRightTurns
     {
@@ -67,11 +70,14 @@ public class Head : MonoBehaviour
 
     void Start()
     {
+        //isPlayer = false; // for all AIs
+
         // TODO: add this after you make the GameController create the Player Head
         //livesRemaining = GameObject.Find("GameController1").GetComponent<GameController>().numberOfLives;
         livesRemaining = GameController.numberOfLives;
         _updateInterval = GameController.updateInterval;
-        mapSize = GameController.mapSize;
+        _effectTimer = 0;
+        //mapSize = GameController.mapSize;
         startingTransform = transform;
         target = this;
         head = this;
@@ -86,8 +92,8 @@ public class Head : MonoBehaviour
 
         if (PlayerPrefs.GetInt("numPlayers") == 1)
         {
-            //if (this.gameObject == GameObject.Find("Player1")) { isPlayer = false; }  // for all AIs
-            if (this.gameObject == GameObject.Find("Player2")) { isPlayer = false; }
+            // if this isn't Player1, set isPlayer = false
+            if (!(this.gameObject == GameObject.Find("Player1"))) { isPlayer = false; }
         }
 
         if (isPlayer)
@@ -101,10 +107,9 @@ public class Head : MonoBehaviour
     public virtual void move()
     {
         //transform.Rotate(rotation); 
-        // round values
-        //Vector3 tmp = transform.forward;
-        //transform.position += new Vector3(Mathf.Round(tmp.x), Mathf.Round(tmp.y), Mathf.Round(tmp.z));
         transform.position += transform.forward;
+        // round values
+        transform.position = new Vector3(Mathf.Round(transform.position.x), Mathf.Round(transform.position.y), Mathf.Round(transform.position.z));
         //rotation = Vector3.zero;  // reset immediately after moving
         numRightTurns = 1;
         numLeftTurns = 1;
@@ -124,6 +129,7 @@ public class Head : MonoBehaviour
     public void respawn()
     {
         Debug.Log("Respawning");
+        _effectTimer = 0; // reset speed boosts
         // pick a random respawn point and teleport there
         System.Random ran = new System.Random();
         Transform[] options = GameController.spawnPointList;
@@ -167,7 +173,8 @@ public class Head : MonoBehaviour
         // if anyone runs into an Item - speed boost
         if (collision.gameObject.GetComponent<Item>())
         {
-            collision.gameObject.GetComponent<Item>().transform.position = new Vector3(UnityEngine.Random.Range(-(int)mapSize.x, (int)mapSize.x), 0.0f, UnityEngine.Random.Range(-(int)mapSize.z, (int)mapSize.z));
+            //collision.gameObject.GetComponent<Item>().transform.position = new Vector3(UnityEngine.Random.Range(-(int)mapSize.x, (int)mapSize.x), 0.0f, UnityEngine.Random.Range(-(int)mapSize.z, (int)mapSize.z));
+            GameObject.Find("GameController1").GetComponent<GameController>().timeUntilItemSpawn = 0;
             this._updateInterval = GameController.updateInterval / 2;
             _effectTimer = 150;  // lasts ~3 seconds
         }
@@ -339,18 +346,12 @@ public class Head : MonoBehaviour
         // update time
         _elapsed += Time.deltaTime;
         _effectTimer -= 1;
+        // reset _updateInterval
         if (_effectTimer < 0) { _updateInterval = GameController.updateInterval; }
 
         // player controls go here
         if (isPlayer)
         {
-            // move every updateInterval
-            if (_elapsed >= _updateInterval)
-            {
-                target.move();
-                _elapsed = 0;
-            }
-
             // ROTATION CONTROLS
             // can rotate once every update, but no more than once in either direction
             if (Input.GetKeyDown(kcRight))
@@ -416,21 +417,24 @@ public class Head : MonoBehaviour
 
                 //create list of 3 possible locations
                 Vector3 forwardLoc = transform.position + transform.forward;
+                forwardLoc = new Vector3(Mathf.Round(forwardLoc.x), Mathf.Round(forwardLoc.y), Mathf.Round(forwardLoc.z));
                 transform.Rotate(rotationLeft);
                 Vector3 leftLoc = transform.position + transform.forward;
+                leftLoc = new Vector3(Mathf.Round(leftLoc.x), Mathf.Round(leftLoc.y), Mathf.Round(leftLoc.z));
                 transform.Rotate(rotationRight);
                 transform.Rotate(rotationRight);
                 Vector3 rightLoc = transform.position + transform.forward;
+                rightLoc = new Vector3(Mathf.Round(rightLoc.x), Mathf.Round(rightLoc.y), Mathf.Round(rightLoc.z));
                 transform.Rotate(rotationLeft);
-                Vector3[] rotations = { rotationForward, rotationLeft, rotationRight };
-                Vector3[] positions = { forwardLoc, leftLoc, rightLoc };
+                rotations = new Vector3[] { rotationForward, rotationLeft, rotationRight };
+                positions = new Vector3[] { forwardLoc, leftLoc, rightLoc };
 
                 List<Vector3> allowableRotations = new List<Vector3>();
 
                 noneFound = false;
 
                 // check 3 locations for distances and collisions
-                for (int i = 0; i < positions.Length; ++i)
+                for (int i = 0; i < positions.Length; i++)
                 {
                     if ( !(Physics.CheckSphere(positions[i], 0.45f)) )
                     {
@@ -459,6 +463,7 @@ public class Head : MonoBehaviour
                 // if no closer locations were found, the closest item must be directly behind, so turn randomly
                 if (noneFound)
                 {
+                    Debug.Log("No closer locations found!");
                     // if there's at least 1 allowable rotation
                     if (allowableRotations.Count > 0)
                     {
@@ -466,16 +471,19 @@ public class Head : MonoBehaviour
                         transform.Rotate(allowableRotations[0]);
                     }
                 }
-
-                // move
-                target.move();
-                _elapsed = 0;
             }
             // TODO: remove, this is for testing only - press B to extend
             if (Input.GetKeyDown(KeyCode.B))
             {
                 extend();
             }
+        }
+
+        // move every updateInterval
+        if (_elapsed >= _updateInterval)
+        {
+            target.move();
+            _elapsed = 0;
         }
     }
 }
